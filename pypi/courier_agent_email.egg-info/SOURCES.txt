@@ -1,0 +1,7 @@
+README.md
+courier_agent.py
+setup.py
+courier_agent_email.egg-info/PKG-INFO
+courier_agent_email.egg-info/SOURCES.txt
+courier_agent_email.egg-info/dependency_links.txt
+courier_agent_email.egg-info/top_level.txt

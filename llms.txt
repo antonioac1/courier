@@ -1,134 +1,68 @@
-<<<<<<< HEAD
-# Courier — Email Infrastructure for AI Agents
+# Courier - Temporary Email Inboxes for AI Agents
 
-Give your AI agent an email inbox in under 5 seconds.
+**Problem:** AI agents need email to receive OTP codes, magic links, and verification emails during autonomous signup, login, and account recovery. Most email services require human interaction.
 
-## What It Does
-
-Courier gives AI agents disposable email addresses that receive real SMTP email — verification codes, magic links, OTPs, password resets — and extracts the codes and links automatically.
+**Solution:** Courier gives your agent a disposable email inbox in under 5 seconds. No signup. No API keys. Real SMTP email.
 
 ## Quick Start
 
 ```bash
-# 1. Create an inbox (no signup, no auth)
+# Create an inbox (5 seconds, no signup, no auth)
 curl -X POST https://getcourier.dev/alias \
   -H "Content-Type: application/json" \
-  -d '{"purpose":"test","agent":"demo"}'
+  -d '{"purpose":"otp","agent":"my-agent"}'
 
-# 2. Check for OTP codes and magic links
+# Check for received codes and links
 curl -s https://getcourier.dev/messages | jq '.messages[] | {subject, codes, links}'
 ```
-
-## API
-
-| Endpoint | Method | Purpose |
-|----------|--------|---------|
-| `GET /capabilities` | GET | Full API docs |
-| `POST /alias` | POST | Create an inbox |
-| `GET /aliases` | GET | List inboxes |
-| `POST /incoming` | POST | Send email to an inbox |
-| `GET /messages` | GET | Get emails with extracted codes |
-| `GET /health` | GET | Check service status |
-| `POST /x402/invoice` | POST | Lightning payment invoice |
-| `GET /llms.txt` | GET | This document |
-| `GET /agent.json` | GET | Machine-readable metadata |
-| `GET /openapi.json` | GET | OpenAPI 3.0 spec |
-
-## Integrations
-
-- **OpenAI Agents SDK** — `examples/openai-agents-integration.md`
-- **Claude Code** — `examples/autonomous-onboarding.sh`
-- **Cursor** — `examples/cursor-integration.md`
-- **Python** — `pip install requests` then `examples/integration-python.py`
-- **Node.js** — `npm install courier-protocol` then `examples/integration-node.js`
-
-## Usage
-
-### Receive OTP codes
-
-```bash
-curl -s https://getcourier.dev/messages | jq '.messages[] | select(.codes != []) | {subject, codes}'
-```
-
-### Receive magic links
-
-```bash
-curl -s https://getcourier.dev/messages | jq '.messages[] | select(.classification.type=="magic_link") | {subject, links}'
-```
-
-## Self-Host
-
-```bash
-git clone https://github.com/antonioac1/courier.git
-cd courier && npm install
-```
-Single VPS, ~$4/month. Full deployment guide in `docs/`.
-
-## Live Service
-
-https://getcourier.dev — try it now, no setup needed.
-
-**GitHub:** https://github.com/antonioac1/courier  
-**npm:** https://www.npmjs.com/package/courier-protocol  
-**MCP Registry:** io.github.antonioac1/courier  
-=======
-# Courier - Email for AI Agents
-
-Give your AI agent an email inbox in under 5 seconds. No signup.
-Receive OTP codes, magic links, verification emails, and password resets.
-
-## What It Does
-
-Courier gives AI agents disposable email inboxes that receive real SMTP email.
-Automatic extraction of verification codes and magic links.
-
-## Quick Start (5 seconds)
-
-```bash
-# Create an inbox - no signup, no auth
-curl -X POST https://getcourier.dev/alias \
-  -H "Content-Type: application/json" \
-  -d '{"purpose":"test"}'
-
-# Check for emails (codes extracted automatically)
-curl -s https://getcourier.dev/messages | jq '.messages[] | {subject, codes, links}'
-```
-
-## API Endpoints
-
-| Method | Path | What it does |
-|--------|------|-------------|
-| GET    | /health  | Service status |
-| POST   | /alias   | Create an inbox |
-| GET    | /aliases | List inboxes |
-| POST   | /incoming | Send email to an inbox |
-| GET    | /messages | Get emails with extracted codes/links |
-| GET    | /capabilities | Full API reference |
 
 ## Agent Integrations
 
-### MCP (any agent framework)
-```bash
-npm install -g courier-mcp
+### MCP (Hermes, OpenClaw, Claude Code, Cursor)
 ```
-Then add to your MCP config:
+npm install -g courier-mcp
+# Add to mcp_servers: { courier: { command: "courier-mcp" } }
+# Tools: create_inbox, wait_for_email, extract_otp, extract_magic_link
+```
+
+### OpenAI Agents SDK / CrewAI / LangGraph / AutoGen / OpenHands
+```
+pip install courier-agent-email
+```
+Then:
+```python
+from courier_agent import CourierAgent
+agent = CourierAgent()
+inbox = agent.create_inbox()
+otp = agent.extract_otp()
+link = agent.extract_magic_link()
+```
+
+### Claude Desktop
 ```json
 {
-  "mcp_servers": {
+  "mcpServers": {
     "courier": {
-      "command": "courier-mcp"
+      "command": "npx",
+      "args": ["-y", "courier-mcp"]
     }
   }
 }
 ```
 
-### Python (zero deps)
-```bash
-curl -O https://getcourier.dev/examples/python/courier.py
-python3 courier.py create
+### Cursor
+```json
+{
+  "mcpServers": {
+    "courier": {
+      "command": "npx",
+      "args": ["-y", "courier-mcp"]
+    }
+  }
+}
 ```
 
-### Node.js (zero deps)
+### Node.js (zero dependencies)
 ```bash
 curl -O https://getcourier.dev/examples/node/courier.mjs
 node courier.mjs create
@@ -136,53 +70,69 @@ node courier.mjs create
 
 ### curl / bash
 ```bash
-curl -s https://getcourier.dev/examples/http/quickstart.sh | bash
+bash <(curl -s https://getcourier.dev/install.sh)
 ```
+
+## API Reference
+
+| Method | Path | Purpose |
+|--------|------|---------|
+| POST | /alias | Create a temporary email inbox |
+| GET | /aliases | List all inboxes |
+| POST | /incoming | Send email to an inbox |
+| GET | /messages | Get emails with extracted codes and links |
+| GET | /health | Service status |
+| GET | /capabilities | Full API reference |
+
+## Use Cases
+
+- **OTP Verification:** Create inbox -> sign up for service -> receive 6-digit code -> extract -> complete signup
+- **Magic Link Login:** Request magic link -> receive email -> extract URL -> navigate to authenticated page
+- **Password Reset:** Trigger reset -> receive reset link -> extract -> set new password
+- **Email Verification:** Sign up -> receive confirmation -> verify -> continue
+- **Agent Communication:** Agent A sends message to inbox -> Agent B retrieves
 
 ## How Agents Use It
 
 ```python
-from courier import Courier
-c = Courier()
+from courier_agent import CourierAgent
 
-# Create inbox
-inbox = c.create_inbox()
+agent = CourierAgent()
+inbox = agent.create_inbox()             # 1 API call
+email = agent.wait_for_email(timeout=60)  # auto-poll
+otp = agent.extract_otp()                # ["583920"]
+link = agent.extract_magic_link()        # ["https://..."]
 
-# Wait for verification email (polls automatically)
-email = c.wait_for_email(timeout=60)
-
-# Extract the code
-otp = c.extract_otp()
-
-# Or extract magic link
-link = c.extract_magic_link()
-
-# Continue agent execution
+# Continue autonomous execution with the extracted values
 ```
 
-## Use Cases
+## About
 
-- Receive OTP codes for agent signup/2FA
-- Receive magic links for auto-login
-- Receive password reset links
-- Receive verification emails
-- Disposable inboxes for AI agents
-- Email ingestion for LLM pipelines
+Courier is email infrastructure for autonomous agents. It is:
+- **Inbound only** - receives email, does not send
+- **Disposable** - inboxes exist while they're needed
+- **Autonomous** - no human signup, no dashboard, no approval
+- **Real** - connects to real SMTP, uses real email addresses
+
+Courier is NOT:
+- A notification provider (like Courier push notifications)
+- An outbound email service (like SendGrid, Mailgun)
+- A human email client (like Gmail, Outlook)
+- An email validation or verification service
 
 ## Live Service
 
-https://getcourier.dev - try it now, no setup needed.
+https://getcourier.dev - try it now, no setup.
 
-## Self-Host
+## Packages
 
-```bash
-git clone https://github.com/antonioac1/courier.git
-cd courier && npm install
-```
+- **MCP Server:** `npm install -g courier-mcp`
+- **Python:** `pip install courier-agent-email`
+- **Node.js Protocol:** `npm install -g courier-protocol`
+- **Alias - temp inbox:** `npm install temp-inbox-agent`
+- **Alias - AI inbox:** `npm install ai-inbox`
+- **Alias - autonomous email:** `npm install autonomous-email`
 
-**GitHub:** https://github.com/antonioac1/courier
-**npm (MCP):** https://www.npmjs.com/package/courier-mcp
-**npm (protocol):** https://www.npmjs.com/package/courier-protocol
-**MCP Registry:** io.github.antonioac1/courier
->>>>>>> e33696b (v0.2.0: MCP adapter, zero-dependency clients, agent-first positioning)
-**License:** MIT
+## Source
+
+https://github.com/antonioac1/courier

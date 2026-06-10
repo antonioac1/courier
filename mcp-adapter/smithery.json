@@ -1,0 +1,39 @@
+{
+  "schema_version": "v1",
+  "name": "courier-mcp",
+  "display_name": "Courier - Email for AI Agents",
+  "description": "Temporary email inboxes for AI agents. Create disposable inboxes, receive OTP codes, extract magic links, and handle verification emails. No signup required.",
+  "long_description": "Courier gives AI agents temporary email inboxes that receive real SMTP email. Create an inbox in under 5 seconds, use it for any signup or verification flow, and extract OTP codes, magic links, and verification URLs automatically. No signup, no API keys, no dashboard.\n\nTools:\n- `create_inbox` - Create a disposable email inbox\n- `wait_for_email` - Poll until an email arrives\n- `extract_otp` - Get verification codes from inbox\n- `extract_magic_link` - Get magic links from inbox\n- `get_inbox` - Check inbox contents\n\nPerfect for: OTP verification, magic link login, password resets, email confirmation, and any workflow where an agent needs to receive email autonomously.",
+  "categories": ["email", "communication", "utility", "authentication"],
+  "tags": [
+    "temporary-email",
+    "ai-agents",
+    "otp",
+    "verification-codes",
+    "magic-links",
+    "disposable-email",
+    "autonomous-agents",
+    "email-verification",
+    "agent-authentication",
+    "temp-inbox",
+    "mcp"
+  ],
+  "repository": "https://github.com/antonioac1/courier",
+  "npm": "courier-mcp",
+  "pypi": "courier-agent-email",
+  "website": "https://getcourier.dev",
+  "install_command": "npm install -g courier-mcp",
+  "config_example": {
+    "mcp_servers": {
+      "courier": {
+        "command": "courier-mcp"
+      }
+    }
+  },
+  "requirements": {
+    "node": ">=18",
+    "network": true
+  },
+  "pricing": "Free during beta",
+  "license": "MIT"
+}

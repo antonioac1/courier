@@ -1,0 +1,24 @@
+{
+  "name": "ai-inbox",
+  "version": "0.1.0",
+  "description": "Email inboxes for AI agents. Receive OTP codes, magic links, and verification emails autonomously. No signup. Zero dependencies.",
+  "keywords": [
+    "ai inbox",
+    "agent email",
+    "temporary email",
+    "otp extraction",
+    "verification code",
+    "magic link",
+    "disposable inbox",
+    "autonomous email",
+    "email verification",
+    "ai authentication",
+    "receive email",
+    "agent tools"
+  ],
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/antonioac1/courier"
+  }
+}

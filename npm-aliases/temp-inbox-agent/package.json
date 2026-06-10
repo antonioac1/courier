@@ -1,0 +1,24 @@
+{
+  "name": "temp-inbox-agent",
+  "version": "0.1.0",
+  "description": "Temporary email inboxes for AI agents. Receive OTP codes, magic links, and verification emails. No signup. Zero dependencies.",
+  "keywords": [
+    "temporary email",
+    "ai agent inbox",
+    "otp extraction",
+    "verification code",
+    "magic link",
+    "disposable inbox",
+    "autonomous email",
+    "temp inbox",
+    "email verification",
+    "agent email",
+    "receive email",
+    "ai authentication"
+  ],
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/antonioac1/courier"
+  }
+}

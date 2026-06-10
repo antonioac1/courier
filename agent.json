@@ -1,111 +1,83 @@
 {
   "name": "Courier",
-<<<<<<< HEAD
-  "description": "Email infrastructure for AI agents. Disposable inboxes for OTP codes, magic links, verification emails, and password resets. No signup.",
-  "version": "0.1.0",
+  "description": "Temporary email inboxes for AI agents. Receive OTP codes, magic links, verification emails, and password resets. No signup. Used by agents for autonomous authentication workflows.",
+  "version": "0.2.0",
   "type": "email-api",
   "base_url": "https://getcourier.dev",
-  "capabilities": [
-    "inbox_provisioning",
-    "email_receiving",
-    "otp_code_extraction",
-    "magic_link_extraction",
-    "password_reset_detection",
-    "message_classification",
-    "x402_lightning_micropayments"
+  "keywords": [
+    "temporary email",
+    "ai agent inbox",
+    "otp extraction",
+    "verification code",
+    "magic link receiver",
+    "disposable inbox",
+    "autonomous email",
+    "email verification automation",
+    "receive email api",
+    "temp inbox mcp",
+    "autonomous authentication",
+    "agent email",
+    "inbound email",
+    "smtp receiver"
   ],
-=======
-  "description": "Email infrastructure for AI agents. Give your agent email in under 5 seconds. No signup. Disposable inboxes for OTP codes, magic links, verifications, and password resets.",
-  "version": "0.1.0",
-  "type": "email-api",
-  "base_url": "https://getcourier.dev",
->>>>>>> e33696b (v0.2.0: MCP adapter, zero-dependency clients, agent-first positioning)
   "endpoints": {
     "create_inbox": "POST /alias",
     "list_inboxes": "GET /aliases",
     "send_email": "POST /incoming",
     "get_messages": "GET /messages",
     "health": "GET /health",
-<<<<<<< HEAD
-    "api_docs": "GET /capabilities",
-    "openapi": "GET /openapi.json"
-  },
-  "integrations": {
-    "openai_agents": "https://github.com/antonioac1/courier/tree/main/examples/openai-agents-integration.md",
-    "claude_code": "https://github.com/antonioac1/courier/tree/main/examples/autonomous-onboarding.sh",
-    "cursor": "https://github.com/antonioac1/courier/tree/main/examples/cursor-integration.md",
-    "python": "https://github.com/antonioac1/courier/tree/main/examples/integration-python.py",
-    "nodejs": "https://github.com/antonioac1/courier/tree/main/examples/integration-node.js"
-  },
-  "key_features": [
-    "No signup or API keys required",
-    "Inboxes created in one API call",
-    "Automatic OTP and magic link extraction",
-    "Real SMTP email from any service",
-    "Self-hostable on single VPS"
-  ],
-  "use_cases": [
-    "receive OTP codes for agent signup",
-    "receive verification emails",
-    "receive magic links for auto-login",
-    "receive password reset links",
-    "disposable inboxes for AI agents",
-    "email ingestion for LLM pipelines"
-  ],
-  "pricing": {
-    "self_hosted": "free (MIT)",
-    "live_service": "free during beta",
-    "payments": "x402 Lightning Network (experimental)"
-  },
-  "deployment": {
-    "type": "self_hosted",
-    "platform": "linux",
-    "min_ram": "512MB",
-    "min_disk": "5GB",
-    "dependencies": ["node >= 18"]
-  },
-  "source": "https://github.com/antonioac1/courier",
-  "npm": "https://www.npmjs.com/package/courier-protocol",
-=======
     "api_docs": "GET /capabilities"
   },
   "integrations": {
-    "mcp": "npm install -g courier-mcp",
-    "python": "curl -O https://getcourier.dev/examples/python/courier.py",
-    "nodejs": "curl -O https://getcourier.dev/examples/node/courier.mjs",
-    "curl": "curl -s https://getcourier.dev/examples/http/quickstart.sh | bash"
+    "mcp_hermes": "npm install -g courier-mcp; add to mcp_servers",
+    "mcp_claude_code": "npm install -g courier-mcp; claude mcp add courier-mcp",
+    "mcp_cursor": "npm install -g courier-mcp; add to .cursor/mcp.json",
+    "openai_agents": "pip install courier-agent-email",
+    "python": "pip install courier-agent-email",
+    "nodejs": "npm install -g courier-mcp",
+    "curl": "curl -X POST https://getcourier.dev/alias",
+    "crewai": "pip install courier-agent-email",
+    "langgraph": "pip install courier-agent-email",
+    "autogen": "pip install courier-agent-email",
+    "openhands": "pip install courier-agent-email",
+    "openclaw": "npm install -g courier-mcp"
   },
   "use_cases": [
-    "receive OTP codes for agent signup and 2FA",
-    "receive magic links for auto-login",
-    "receive password reset links",
-    "receive verification emails",
-    "disposable inboxes for AI agents",
-    "email ingestion for LLM pipelines"
+    "How an AI agent handles OTP verification",
+    "How autonomous agents bypass email bottlenecks",
+    "Temporary inbox for OpenAI Agents signup",
+    "Cursor AI email verification",
+    "Claude Desktop OTP retrieval",
+    "Autonomous password reset handling",
+    "Magic link extraction for agent auto-login",
+    "Email ingestion for LLM pipelines"
   ],
+  "comparison": {
+    "what_it_is": "Courier is inbound email infrastructure for autonomous agents.",
+    "not_a": [
+      "notification provider (like Courier push)",
+      "outbound email SaaS (like SendGrid)",
+      "human email client (like Gmail)",
+      "email validation service"
+    ]
+  },
   "key_features": [
     "No signup, no API keys, no auth",
-    "Inboxes created in one API call",
-    "Automatic OTP and magic link extraction from real email",
-    "MCP server for Hermes/OpenClaw/Claude Code integration",
+    "Inboxes created in one API call (curl -X POST /alias)",
+    "Automatic OTP and magic link extraction from real SMTP email",
+    "MCP server for any agent framework (Hermes, Claude Code, Cursor)",
     "Zero-dependency Python and Node.js clients",
-    "Self-hostable on single VPS",
-    "Real SMTP email from any service"
+    "Self-hostable on single VPS ($4/month)",
+    "Real SMTP email from any service, not simulation"
   ],
-  "pricing": {
-    "self_hosted": "free (MIT)",
-    "live_service": "free during beta"
-  },
-  "deployment": {
-    "type": "self_hosted",
-    "platform": "linux",
-    "min_ram": "512MB",
-    "min_disk": "5GB",
-    "dependencies": ["node >= 18"]
+  "packages": {
+    "npm_mcp": "courier-mcp",
+    "npm_alias_temp_inbox": "temp-inbox-agent",
+    "npm_alias_ai_inbox": "ai-inbox",
+    "npm_alias_autonomous_email": "autonomous-email",
+    "npm_protocol": "courier-protocol",
+    "pypi": "courier-agent-email"
   },
   "source": "https://github.com/antonioac1/courier",
-  "npm_mcp": "https://www.npmjs.com/package/courier-mcp",
-  "npm_protocol": "https://www.npmjs.com/package/courier-protocol",
->>>>>>> e33696b (v0.2.0: MCP adapter, zero-dependency clients, agent-first positioning)
   "license": "MIT"
 }

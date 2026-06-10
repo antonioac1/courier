@@ -1,0 +1,22 @@
+{
+  "name": "autonomous-email",
+  "version": "0.1.0",
+  "description": "Autonomous email handling for AI agents. Receive OTP codes, magic links, and verification emails without human intervention. No signup.",
+  "keywords": [
+    "autonomous email",
+    "ai agent email",
+    "otp extraction",
+    "verification code",
+    "magic link",
+    "disposable inbox",
+    "temporary email",
+    "autonomous authentication",
+    "email verification",
+    "agent automation"
+  ],
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/antonioac1/courier"
+  }
+}
