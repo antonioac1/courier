@@ -1,7 +1,7 @@
 {
   "name": "courier-protocol",
-  "version": "0.1.0",
-  "description": "Self-sovereign operational continuity protocol for autonomous AI agents. Zero signup. Lightning Network micropayments.",
+  "version": "0.1.1",
+  "description": "Email infrastructure for AI agents. Disposable inboxes for OTP codes, magic links, and verification emails. No signup.",
   "main": "examples/integration-node.js",
   "bin": {},
   "files": [

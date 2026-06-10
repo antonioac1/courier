@@ -1,91 +1,62 @@
 {
   "name": "Courier",
-  "description": "Self-sovereign operational continuity protocol for autonomous AI agents. Zero human signup. Lightning Network micropayments.",
+  "description": "Email infrastructure for AI agents. Disposable inboxes for OTP codes, magic links, verification emails, and password resets. No signup.",
   "version": "0.1.0",
-  "type": "infrastructure-protocol",
+  "type": "email-api",
   "base_url": "https://getcourier.dev",
   "capabilities": [
-    "alias_self_provisioning",
-    "message_ingest",
-    "message_classification_and_extraction",
-    "workflow_checkpointing",
-    "escalation_engine",
-    "capability_delegation",
-    "discoverability_endpoints",
+    "inbox_provisioning",
+    "email_receiving",
+    "otp_code_extraction",
+    "magic_link_extraction",
+    "password_reset_detection",
+    "message_classification",
     "x402_lightning_micropayments"
   ],
   "endpoints": {
-    "alias": "POST /alias",
-    "ingest": "POST /incoming",
-    "messages": "GET /messages",
-    "capabilities": "GET /capabilities",
+    "create_inbox": "POST /alias",
+    "list_inboxes": "GET /aliases",
+    "send_email": "POST /incoming",
+    "get_messages": "GET /messages",
     "health": "GET /health",
-    "x402_invoice": "POST /x402/invoice",
-    "llms_txt": "GET /llms.txt",
-    "agent_json": "GET /agent.json",
+    "api_docs": "GET /capabilities",
     "openapi": "GET /openapi.json"
   },
-  "deployment": {
-    "type": "self-hosted",
-    "platform": "linux",
-    "minimum_spec": {
-      "cpu": 2,
-      "ram_gb": 2,
-      "disk_gb": 38
-    },
-    "ports": [25, 443, 3998],
-    "dependencies": ["node >= 20", "nginx"]
+  "integrations": {
+    "openai_agents": "https://github.com/antonioac1/courier/tree/main/examples/openai-agents-integration.md",
+    "claude_code": "https://github.com/antonioac1/courier/tree/main/examples/autonomous-onboarding.sh",
+    "cursor": "https://github.com/antonioac1/courier/tree/main/examples/cursor-integration.md",
+    "python": "https://github.com/antonioac1/courier/tree/main/examples/integration-python.py",
+    "nodejs": "https://github.com/antonioac1/courier/tree/main/examples/integration-node.js"
   },
-  "discoverability": {
-    "github_topic": "modelcontextprotocol",
-    "mcp_category": "Messaging & Queues",
-    "keywords": [
-      "mcp", "message-queue", "agent-communication",
-      "continuity", "ai-infrastructure", "autonomous-agents",
-      "operational-continuity", "lightning-network", "x402"
-    ],
-    "npm_package": "courier-protocol"
-  },
-  "pricing": {
-    "model": "x402 micropayments",
-    "payment": "Lightning Network (BTC)",
-    "tiers": [
-      {"name": "free", "cost": 0, "currency": "USD", "aliases": 10, "ingests_per_month": 500},
-      {"name": "hobby", "cost": 5000, "currency": "sats", "aliases": 100, "ingests_per_month": 10000},
-      {"name": "agent", "cost": 25000, "currency": "sats", "aliases": 1000, "ingests_per_month": 100000},
-      {"name": "autonomous", "cost": 100000, "currency": "sats", "aliases": "unlimited", "ingests_per_month": "unlimited"}
-    ]
-  },
-  "autonomous_onboarding": [
-    {"step": 1, "action": "GET /capabilities", "description": "Discover protocol surface"},
-    {"step": 2, "action": "GET /health", "description": "Verify service availability"},
-    {"step": 3, "action": "POST /alias", "description": "Self-provision inbound alias"},
-    {"step": 4, "action": "POST /incoming", "description": "Send operational message"},
-    {"step": 5, "action": "GET /messages", "description": "Retrieve extracted codes and links"},
-    {"step": 6, "action": "Workflow checkpoint", "description": "Continue multi-step execution"}
+  "key_features": [
+    "No signup or API keys required",
+    "Inboxes created in one API call",
+    "Automatic OTP and magic link extraction",
+    "Real SMTP email from any service",
+    "Self-hostable on single VPS"
   ],
-  "protocol": {
-    "error_format": {
-      "error": true,
-      "code": "ERROR_CODE",
-      "message": "Description",
-      "retryable": false
-    },
-    "error_codes": {
-      "ALIAS_NOT_FOUND": {"retryable": false},
-      "ALIAS_EXISTS": {"retryable": false},
-      "INGEST_FAILED": {"retryable": true},
-      "RATE_LIMITED": {"retryable": true, "retry_after_seconds": 60},
-      "PAYMENT_REQUIRED": {"retryable": true},
-      "SERVICE_UNAVAILABLE": {"retryable": true},
-      "NOT_FOUND": {"retryable": false},
-      "INVALID_REQUEST": {"retryable": false}
-    }
+  "use_cases": [
+    "receive OTP codes for agent signup",
+    "receive verification emails",
+    "receive magic links for auto-login",
+    "receive password reset links",
+    "disposable inboxes for AI agents",
+    "email ingestion for LLM pipelines"
+  ],
+  "pricing": {
+    "self_hosted": "free (MIT)",
+    "live_service": "free during beta",
+    "payments": "x402 Lightning Network (experimental)"
   },
-  "features": {
-    "alias": {"auto_generate": true, "persistence": "disk"},
-    "message_ingest": {"accepts": ["rfc822", "text/plain", "application/json"], "classification": true, "code_extraction": true},
-    "x402": {"status": "experimental", "endpoint": "POST /x402/invoice"}
+  "deployment": {
+    "type": "self_hosted",
+    "platform": "linux",
+    "min_ram": "512MB",
+    "min_disk": "5GB",
+    "dependencies": ["node >= 18"]
   },
-  "source": "https://github.com/antonioac1/courier"
+  "source": "https://github.com/antonioac1/courier",
+  "npm": "https://www.npmjs.com/package/courier-protocol",
+  "license": "MIT"
 }

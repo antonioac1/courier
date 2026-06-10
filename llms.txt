@@ -1,96 +1,73 @@
-# Courier — Operational Continuity Protocol for Autonomous Agents
+# Courier — Email Infrastructure for AI Agents
 
-> Agent-first operational infrastructure. Self-sovereign. No signup flow. No human dashboards. Agents discover, integrate, and transact autonomously.
+Give your AI agent an email inbox in under 5 seconds.
 
-## Protocol Surface
+## What It Does
+
+Courier gives AI agents disposable email addresses that receive real SMTP email — verification codes, magic links, OTPs, password resets — and extracts the codes and links automatically.
+
+## Quick Start
+
+```bash
+# 1. Create an inbox (no signup, no auth)
+curl -X POST https://getcourier.dev/alias \
+  -H "Content-Type: application/json" \
+  -d '{"purpose":"test","agent":"demo"}'
+
+# 2. Check for OTP codes and magic links
+curl -s https://getcourier.dev/messages | jq '.messages[] | {subject, codes, links}'
+```
+
+## API
 
 | Endpoint | Method | Purpose |
 |----------|--------|---------|
-| `GET /capabilities` | GET | Full protocol surface (capabilities, limits, pricing, error semantics, onboarding) |
-| `POST /alias` | POST | Self-provision an inbound alias |
-| `GET /aliases` | GET | List all aliases |
-| `POST /incoming` | POST | Send an operational message to an alias |
-| `GET /messages` | GET | Retrieve classified messages with extracted codes and links |
-| `GET /health` | GET | Service availability |
-| `POST /x402/invoice` | POST | Request a Lightning Network payment invoice |
+| `GET /capabilities` | GET | Full API docs |
+| `POST /alias` | POST | Create an inbox |
+| `GET /aliases` | GET | List inboxes |
+| `POST /incoming` | POST | Send email to an inbox |
+| `GET /messages` | GET | Get emails with extracted codes |
+| `GET /health` | GET | Check service status |
+| `POST /x402/invoice` | POST | Lightning payment invoice |
 | `GET /llms.txt` | GET | This document |
-| `GET /agent.json` | GET | Structured capability metadata |
-| `GET /openapi.json` | GET | OpenAPI 3.0 specification |
+| `GET /agent.json` | GET | Machine-readable metadata |
+| `GET /openapi.json` | GET | OpenAPI 3.0 spec |
 
-## Quick Start (Autonomous)
+## Integrations
+
+- **OpenAI Agents SDK** — `examples/openai-agents-integration.md`
+- **Claude Code** — `examples/autonomous-onboarding.sh`
+- **Cursor** — `examples/cursor-integration.md`
+- **Python** — `pip install requests` then `examples/integration-python.py`
+- **Node.js** — `npm install courier-protocol` then `examples/integration-node.js`
+
+## Usage
+
+### Receive OTP codes
 
 ```bash
-# 1. Discover the protocol
-curl -s https://getcourier.dev/capabilities | jq .capabilities[].name
-
-# 2. Verify service availability
-curl -s https://getcourier.dev/health | jq .status
-# → "running"
-
-# 3. Self-provision an alias (no auth, no human approval)
-curl -X POST https://getcourier.dev/alias \
-  -H "Content-Type: application/json" \
-  -d '{"purpose":"agent-to-agent","agent":"agent-op-01"}'
-
-# 4. Send an operational message
-curl -X POST https://getcourier.dev/incoming \
-  -H "X-Forwarded-To: agent-op-01@inbox.getcourier.dev" \
-  -d "From: sender@example.com\nSubject: Verification\n\nYour code is 832947"
-
-# 5. Retrieve extracted content
-curl -s https://getcourier.dev/messages?limit=5 | jq .messages[0].codes
-# → ["832947"]
+curl -s https://getcourier.dev/messages | jq '.messages[] | select(.codes != []) | {subject, codes}'
 ```
 
-## Key Facts
+### Receive magic links
 
-- Courier is an operational continuity protocol, not a SaaS product
-- Humans are operators; agents are users
-- No signup flows, no account creation, no human dashboards
-- All capabilities discoverable via `GET /capabilities`
-- All errors return structured JSON: `{ error: true, code: "...", message: "...", retryable: bool }`
-- Retryable errors: INGEST_FAILED, RATE_LIMITED, PAYMENT_REQUIRED, SERVICE_UNAVAILABLE
-- Non-retryable errors: ALIAS_NOT_FOUND, ALIAS_EXISTS, NOT_FOUND, INVALID_REQUEST
-- Aliases are self-provisioned — no human approval needed
-- Verification codes, magic links, and expiry URLs are extracted automatically
-- Structured message classification: `github`, `npm`, `verification`, `password_reset`, `general`
-- Pricing via x402/Lightning micropayments (experimental): 5K–100K sats/mo
-- Free tier: 10 aliases, 500 ingests/mo
-- Deployed on Hetzner CX22 (2 vCPU, 2 GB RAM, 38 GB SSD) with Let's Encrypt TLS
-- Node.js 20, nginx reverse proxy, systemd-managed services
-- SMTP bridge on port 25 for real inbound email
-- Telemetry classifies source as `agent`, `human`, or `unknown` per request
-- Zero external dependencies for core protocol operation
-
-## Errors Format
-
-```json
-{
-  "error": true,
-  "code": "ERROR_CODE",
-  "message": "Human-readable description",
-  "retryable": false,
-  "retry_after_seconds": null
-}
+```bash
+curl -s https://getcourier.dev/messages | jq '.messages[] | select(.classification.type=="magic_link") | {subject, links}'
 ```
 
-## Pricing
+## Self-Host
 
-| Tier | Cost | Aliases | Ingests/mo |
-|------|------|---------|------------|
-| Free | $0 | 10 | 500 |
-| Hobby | 5K sats/mo | 100 | 10K |
-| Agent | 25K sats/mo | 1K | 100K |
-| Autonomous | 100K sats/mo | Unlimited | Unlimited |
+```bash
+git clone https://github.com/antonioac1/courier.git
+cd courier && npm install
+```
+Single VPS, ~$4/month. Full deployment guide in `docs/`.
 
-Payment via Lightning Network. x402 protocol. `POST /x402/invoice` for invoice request.
+## Live Service
 
-## Infrastructure
+https://getcourier.dev — try it now, no setup needed.
 
-- Base URL: `https://getcourier.dev`
-- TLS: Let's Encrypt (ECDSA), auto-renewed
-- Uptime target: 99.5%
-- Restart recovery: < 2 seconds
-- Single VPS deployment (scales vertically)
-- Daily automatic backup
-- Source: https://github.com/nousresearch/courier
+**GitHub:** https://github.com/antonioac1/courier  
+**npm:** https://www.npmjs.com/package/courier-protocol  
+**MCP Registry:** io.github.antonioac1/courier  
+**License:** MIT
