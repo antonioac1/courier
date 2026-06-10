@@ -87,5 +87,5 @@
     "message_ingest": {"accepts": ["rfc822", "text/plain", "application/json"], "classification": true, "code_extraction": true},
     "x402": {"status": "experimental", "endpoint": "POST /x402/invoice"}
   },
-  "source": "https://github.com/nousresearch/courier"
+  "source": "https://github.com/antonioac1/courier"
 }

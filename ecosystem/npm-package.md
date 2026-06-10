@@ -11,7 +11,7 @@ description: >
 version: 0.1.0
 license: MIT
 homepage: https://getcourier.dev
-repository: https://github.com/nousresearch/courier
+repository: https://github.com/antonioac1/courier
 keywords:
   - courier
   - mcp
@@ -43,7 +43,7 @@ The npm package ships a minimal, zero-dependency HTTP client for the Courier pro
   "homepage": "https://getcourier.dev",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/nousresearch/courier.git"
+    "url": "git+https://github.com/antonioac1/courier.git"
   },
   "keywords": [
     "courier",

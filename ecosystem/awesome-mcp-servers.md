@@ -2,7 +2,7 @@
 
 Self-sovereign operational continuity protocol for autonomous AI agents. Encrypted vault, session persistence, workflow engine, escalation engine, and inbound email — all self-hosted, zero external dependencies.
 
-- **GitHub**: https://github.com/nousresearch/courier
+- **GitHub**: https://github.com/antonioac1/courier
 - **Website**: https://getcourier.dev
 - **Capabilities**: [/capabilities](https://getcourier.dev/capabilities)
 - **Agent Metadata**: [/agent.json](https://getcourier.dev/agent.json)

@@ -54,7 +54,7 @@ description: >
 ## URLs
 
 - **Website:** https://getcourier.dev
-- **GitHub:** https://github.com/nousresearch/courier
+- **GitHub:** https://github.com/antonioac1/courier
 - **Capabilities:** https://getcourier.dev/capabilities
 - **Agent Metadata:** https://getcourier.dev/agent.json
 - **LLM Context:** https://getcourier.dev/llms.txt

@@ -26,7 +26,7 @@
   ],
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/nousresearch/courier.git"
+    "url": "git+https://github.com/antonioac1/courier.git"
   },
   "license": "MIT",
   "engines": {
