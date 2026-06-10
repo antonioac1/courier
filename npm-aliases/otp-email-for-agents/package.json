@@ -1,0 +1,22 @@
+{
+  "name": "otp-email-for-agents",
+  "version": "0.1.0",
+  "description": "OTP email inboxes for AI agents. Receive one-time passwords, verification codes, and 2FA emails. No signup. Autonomous OTP extraction.",
+  "keywords": [
+    "otp",
+    "verification code",
+    "2fa",
+    "ai agent",
+    "one-time password",
+    "temporary email",
+    "autonomous email",
+    "courier",
+    "agent email",
+    "receive otp"
+  ],
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/antonioac1/courier"
+  }
+}

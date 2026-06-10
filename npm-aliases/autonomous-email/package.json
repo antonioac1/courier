@@ -1,6 +1,6 @@
 {
   "name": "autonomous-email",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "Autonomous email handling for AI agents. Receive OTP codes, magic links, and verification emails without human intervention. No signup.",
   "keywords": [
     "autonomous email",

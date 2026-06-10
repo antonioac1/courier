@@ -1,6 +1,6 @@
 {
   "name": "temp-inbox-agent",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "Temporary email inboxes for AI agents. Receive OTP codes, magic links, and verification emails. No signup. Zero dependencies.",
   "keywords": [
     "temporary email",

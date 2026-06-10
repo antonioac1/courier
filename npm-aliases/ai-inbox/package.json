@@ -1,6 +1,6 @@
 {
   "name": "ai-inbox",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "Email inboxes for AI agents. Receive OTP codes, magic links, and verification emails autonomously. No signup. Zero dependencies.",
   "keywords": [
     "ai inbox",

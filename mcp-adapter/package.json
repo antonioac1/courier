@@ -1,12 +1,14 @@
 {
   "name": "courier-mcp",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "description": "MCP server for temporary AI agent email inboxes. Create disposable inboxes, receive OTP codes, extract magic links, handle verification emails. For Hermes, Claude Code, Cursor, and OpenAI Agents.",
   "type": "module",
   "bin": {
     "courier-mcp": "./server.mjs"
   },
-  "files": ["server.mjs"],
+  "files": [
+    "server.mjs"
+  ],
   "keywords": [
     "mcp",
     "temporary email",

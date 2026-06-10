@@ -1,11 +1,22 @@
 # autonomous-email
 
-Autonomous email handling for AI agents. Receive OTP codes, magic links, and verification emails without human intervention. No signup.
+**Autonomous email for AI agents.** Receive OTP codes, magic links, verification emails. No signup. No human intervention.
 
-**This is an alias package.** The underlying project is Courier.
+## What this is
 
-A single call creates a disposable inbox that receives real SMTP email and automatically extracts verification codes and links.
+A discovery alias for **Courier** — the email layer agents can actually use.
 
+Courier gives agents disposable email inboxes. No Gmail API. No OAuth. No dashboard.
+
+```bash
+# MCP (for Hermes, Claude Code, Cursor)
+npm install -g courier-mcp
+
+# Python
+pip install courier-agent-email
+
+# curl
+curl -X POST https://getcourier.dev/alias -H "Content-Type: application/json" -d '{"purpose":"test"}'
 ```
-POST /alias -> curl + api -> disposable inbox -> receive email -> extract OTP -> continue execution
-```
+
+Related: **courier-mcp**, **temp-inbox-agent**, **ai-inbox**, **courier-protocol**

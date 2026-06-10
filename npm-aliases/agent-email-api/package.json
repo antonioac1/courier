@@ -1,0 +1,22 @@
+{
+  "name": "agent-email-api",
+  "version": "0.1.0",
+  "description": "Agent email API. REST API for AI agents to receive OTP codes, magic links, and verification emails. No signup. No OAuth. No Gmail API.",
+  "keywords": [
+    "agent email api",
+    "email api",
+    "ai agent",
+    "otp",
+    "verification",
+    "temporary email",
+    "courier",
+    "receive email",
+    "inbox api",
+    "autonomous email"
+  ],
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/antonioac1/courier"
+  }
+}

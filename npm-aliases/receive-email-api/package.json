@@ -1,0 +1,22 @@
+{
+  "name": "receive-email-api",
+  "version": "0.1.0",
+  "description": "Receive email API for AI agents. HTTP API to create inboxes and retrieve OTP codes, magic links, and verification emails. No signup. No OAuth.",
+  "keywords": [
+    "receive email api",
+    "email api",
+    "ai agents",
+    "temporary email",
+    "inbox api",
+    "otp api",
+    "verification api",
+    "courier",
+    "agent email",
+    "smtp receiver"
+  ],
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/antonioac1/courier"
+  }
+}

@@ -1,0 +1,24 @@
+{
+  "name": "agent-email-inbox",
+  "version": "0.1.0",
+  "description": "Email inboxes for AI agents. Receive OTP codes, magic links, and verification emails. No signup. No Gmail API. No OAuth.",
+  "keywords": [
+    "ai agent email",
+    "agent inbox",
+    "otp",
+    "verification code",
+    "magic link",
+    "temporary email",
+    "autonomous email",
+    "email for agents",
+    "courier",
+    "agent-native email",
+    "no gmail api",
+    "receive email"
+  ],
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/antonioac1/courier"
+  }
+}
