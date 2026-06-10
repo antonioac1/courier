@@ -1,0 +1,91 @@
+{
+  "name": "Courier",
+  "description": "Self-sovereign operational continuity protocol for autonomous AI agents. Zero human signup. Lightning Network micropayments.",
+  "version": "0.1.0",
+  "type": "infrastructure-protocol",
+  "base_url": "https://getcourier.dev",
+  "capabilities": [
+    "alias_self_provisioning",
+    "message_ingest",
+    "message_classification_and_extraction",
+    "workflow_checkpointing",
+    "escalation_engine",
+    "capability_delegation",
+    "discoverability_endpoints",
+    "x402_lightning_micropayments"
+  ],
+  "endpoints": {
+    "alias": "POST /alias",
+    "ingest": "POST /incoming",
+    "messages": "GET /messages",
+    "capabilities": "GET /capabilities",
+    "health": "GET /health",
+    "x402_invoice": "POST /x402/invoice",
+    "llms_txt": "GET /llms.txt",
+    "agent_json": "GET /agent.json",
+    "openapi": "GET /openapi.json"
+  },
+  "deployment": {
+    "type": "self-hosted",
+    "platform": "linux",
+    "minimum_spec": {
+      "cpu": 2,
+      "ram_gb": 2,
+      "disk_gb": 38
+    },
+    "ports": [25, 443, 3998],
+    "dependencies": ["node >= 20", "nginx"]
+  },
+  "discoverability": {
+    "github_topic": "modelcontextprotocol",
+    "mcp_category": "Messaging & Queues",
+    "keywords": [
+      "mcp", "message-queue", "agent-communication",
+      "continuity", "ai-infrastructure", "autonomous-agents",
+      "operational-continuity", "lightning-network", "x402"
+    ],
+    "npm_package": "courier-protocol"
+  },
+  "pricing": {
+    "model": "x402 micropayments",
+    "payment": "Lightning Network (BTC)",
+    "tiers": [
+      {"name": "free", "cost": 0, "currency": "USD", "aliases": 10, "ingests_per_month": 500},
+      {"name": "hobby", "cost": 5000, "currency": "sats", "aliases": 100, "ingests_per_month": 10000},
+      {"name": "agent", "cost": 25000, "currency": "sats", "aliases": 1000, "ingests_per_month": 100000},
+      {"name": "autonomous", "cost": 100000, "currency": "sats", "aliases": "unlimited", "ingests_per_month": "unlimited"}
+    ]
+  },
+  "autonomous_onboarding": [
+    {"step": 1, "action": "GET /capabilities", "description": "Discover protocol surface"},
+    {"step": 2, "action": "GET /health", "description": "Verify service availability"},
+    {"step": 3, "action": "POST /alias", "description": "Self-provision inbound alias"},
+    {"step": 4, "action": "POST /incoming", "description": "Send operational message"},
+    {"step": 5, "action": "GET /messages", "description": "Retrieve extracted codes and links"},
+    {"step": 6, "action": "Workflow checkpoint", "description": "Continue multi-step execution"}
+  ],
+  "protocol": {
+    "error_format": {
+      "error": true,
+      "code": "ERROR_CODE",
+      "message": "Description",
+      "retryable": false
+    },
+    "error_codes": {
+      "ALIAS_NOT_FOUND": {"retryable": false},
+      "ALIAS_EXISTS": {"retryable": false},
+      "INGEST_FAILED": {"retryable": true},
+      "RATE_LIMITED": {"retryable": true, "retry_after_seconds": 60},
+      "PAYMENT_REQUIRED": {"retryable": true},
+      "SERVICE_UNAVAILABLE": {"retryable": true},
+      "NOT_FOUND": {"retryable": false},
+      "INVALID_REQUEST": {"retryable": false}
+    }
+  },
+  "features": {
+    "alias": {"auto_generate": true, "persistence": "disk"},
+    "message_ingest": {"accepts": ["rfc822", "text/plain", "application/json"], "classification": true, "code_extraction": true},
+    "x402": {"status": "experimental", "endpoint": "POST /x402/invoice"}
+  },
+  "source": "https://github.com/nousresearch/courier"
+}

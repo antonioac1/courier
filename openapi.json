@@ -1,0 +1,144 @@
+{
+  "openapi": "3.0.0",
+  "info": {
+    "title": "Courier — Operational Continuity Protocol",
+    "version": "0.1.0",
+    "description": "Self-sovereign operational continuity protocol for autonomous AI agents. Lightning Network micropayments. Zero human signup."
+  },
+  "servers": [
+    {
+      "url": "https://getcourier.dev",
+      "description": "Production"
+    }
+  ],
+  "paths": {
+    "/capabilities": {
+      "get": {
+        "summary": "Protocol surface discovery",
+        "description": "Returns full protocol surface including capabilities, limits, pricing tiers, error semantics, and autonomous onboarding flow. Designed for machine consumption.",
+        "responses": {
+          "200": {
+            "description": "Protocol capabilities document",
+            "content": {"application/json": {"schema": {"type": "object"}}}
+          }
+        }
+      }
+    },
+    "/health": {
+      "get": {
+        "summary": "Service health check",
+        "description": "Returns service availability, alias count, message count, and uptime.",
+        "responses": {
+          "200": {
+            "description": "Health status",
+            "content": {"application/json": {"schema": {
+              "type": "object",
+              "properties": {
+                "service": {"type": "string"},
+                "status": {"type": "string"},
+                "aliases": {"type": "integer"},
+                "messages": {"type": "integer"},
+                "uptime_seconds": {"type": "integer"}
+              }
+            }}}
+          }
+        }
+      }
+    },
+    "/alias": {
+      "post": {
+        "summary": "Create an inbound alias",
+        "description": "Self-provision an alias for agent communication. No auth required. No human approval.",
+        "requestBody": {
+          "content": {"application/json": {
+            "schema": {
+              "type": "object",
+              "properties": {
+                "alias": {"type": "string", "description": "Optional alias name. Auto-generated if omitted."},
+                "purpose": {"type": "string"},
+                "service": {"type": "string"},
+                "agent": {"type": "string"}
+              }
+            }
+          }}
+        },
+        "responses": {
+          "200": {"description": "Alias created"},
+          "409": {"description": "ALIAS_EXISTS"},
+          "429": {"description": "RATE_LIMITED"}
+        }
+      }
+    },
+    "/aliases": {
+      "get": {
+        "summary": "List all aliases",
+        "responses": {
+          "200": {"description": "Array of alias objects"}
+        }
+      }
+    },
+    "/incoming": {
+      "post": {
+        "summary": "Send an operational message",
+        "description": "Ingests a message for a Courier alias. Accepts raw RFC 822 email, plain text, or structured JSON. Returns classification, confidence score, and extracted codes/links.",
+        "requestBody": {
+          "content": {
+            "text/plain": {"schema": {"type": "string"}},
+            "message/rfc822": {"schema": {"type": "string"}}
+          }
+        },
+        "parameters": [
+          {"name": "X-Forwarded-To", "in": "header", "schema": {"type": "string"}, "description": "Recipient alias"},
+          {"name": "X-Forwarded-From", "in": "header", "schema": {"type": "string"}}
+        ],
+        "responses": {
+          "200": {"description": "Message ingested"},
+          "404": {"description": "ALIAS_NOT_FOUND"},
+          "429": {"description": "RATE_LIMITED"}
+        }
+      }
+    },
+    "/messages": {
+      "get": {
+        "summary": "Retrieve messages",
+        "description": "Returns recent messages with extracted verification codes, magic links, and classification.",
+        "parameters": [
+          {"name": "limit", "in": "query", "schema": {"type": "integer", "default": 10}}
+        ],
+        "responses": {
+          "200": {"description": "Array of messages with extracted content"}
+        }
+      }
+    },
+    "/x402/invoice": {
+      "post": {
+        "summary": "Lightning Network invoice",
+        "description": "Requests a Lightning Network payment invoice. Returns HTTP 402 Payment Required with x402 semantics.",
+        "responses": {
+          "402": {"description": "Payment required — Lightning invoice in response body"}
+        }
+      }
+    },
+    "/llms.txt": {
+      "get": {
+        "summary": "LLM context document",
+        "description": "Plaintext protocol overview for LLM context injection.",
+        "responses": {"200": {"description": "Markdown protocol overview"}}
+      }
+    },
+    "/agent.json": {
+      "get": {
+        "summary": "Agent metadata",
+        "description": "Structured capability metadata for autonomous agent discovery.",
+        "responses": {"200": {"description": "JSON agent metadata"}}
+      }
+    },
+    "/openapi.json": {
+      "get": {
+        "summary": "OpenAPI specification",
+        "description": "This document.",
+        "responses": {"200": {"description": "OpenAPI 3.0 specification"}}
+      }
+    }
+  }
+}

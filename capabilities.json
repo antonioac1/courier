@@ -1,0 +1,323 @@
+{
+  "service": "Courier",
+  "version": "0.1.0",
+  "description": "Operational continuity protocol for autonomous agents",
+  "architecture": {
+    "type": "self-hosted",
+    "protocol": "HTTP/JSON",
+    "model": "agent-to-agent",
+    "governance": "administrator-operated",
+    "users": "autonomous agents"
+  },
+  "capabilities": [
+    {
+      "name": "alias",
+      "description": "Create inbound aliases for agent communication",
+      "endpoint": "POST /alias",
+      "request": {
+        "alias": "string (optional, auto-generated if omitted)",
+        "purpose": "string",
+        "service": "string",
+        "agent": "string"
+      },
+      "response": {
+        "success": true,
+        "alias": {
+          "alias": "string",
+          "purpose": "string",
+          "created_at": "ISO timestamp"
+        }
+      },
+      "limits": {
+        "free": 10,
+        "paid": 1000
+      }
+    },
+    {
+      "name": "ingest",
+      "description": "Receive and classify operational messages from autonomous agents",
+      "endpoint": "POST /incoming",
+      "request": "Raw email body (text/plain)",
+      "headers": {
+        "X-Forwarded-To": "alias@inbox.getcourier.dev",
+        "X-Forwarded-From": "sender@domain"
+      },
+      "response": {
+        "ingested": true,
+        "message_id": "integer",
+        "classification": "string",
+        "confidence": 0
+      },
+      "limits": {
+        "free": 500,
+        "paid": 10000
+      }
+    },
+    {
+      "name": "message_retrieval",
+      "description": "Retrieve recent messages with extracted codes and links",
+      "endpoint": "GET /messages?limit=N",
+      "response": {
+        "messages": [
+          {
+            "id": "integer",
+            "subject": "string",
+            "from": "string",
+            "classification": "string",
+            "codes": [],
+            "links": []
+          }
+        ]
+      },
+      "limits": {
+        "free": 50,
+        "paid": 1000
+      }
+    },
+    {
+      "name": "health",
+      "description": "Service health check for autonomous integration",
+      "endpoint": "GET /health",
+      "response": {
+        "service": "string",
+        "status": "running",
+        "aliases": "integer",
+        "messages": "integer",
+        "uptime_seconds": "integer"
+      },
+      "limits": {
+        "free": "unlimited",
+        "paid": "unlimited"
+      }
+    },
+    {
+      "name": "discoverability",
+      "description": "Agent-discovery endpoints for autonomous onboarding",
+      "endpoints": [
+        "GET /llms.txt — plaintext protocol overview",
+        "GET /agent.json — structured capability list",
+        "GET /openapi.json — REST API specification",
+        "GET /capabilities — this document"
+      ],
+      "limits": {
+        "free": "unlimited",
+        "paid": "unlimited"
+      }
+    },
+    {
+      "name": "workflow",
+      "description": "Workflow checkpointing for multi-step agent operations",
+      "endpoint": "internal (bundled with Courier)",
+      "states": [
+        "CREATED",
+        "ACTIVE",
+        "WAITING_INPUT",
+        "IN_PROGRESS",
+        "COMPLETED",
+        "FAILED",
+        "PAUSED",
+        "CANCELLED",
+        "ESCALATED",
+        "TIMEOUT"
+      ],
+      "limits": {
+        "free": 50,
+        "paid": 1000
+      }
+    },
+    {
+      "name": "escalation",
+      "description": "Automated escalation for failed or stuck operations",
+      "endpoint": "internal (bundled with Courier)",
+      "states": [
+        "DETECTED",
+        "ACKNOWLEDGED",
+        "INVESTIGATING",
+        "RESOLVED",
+        "CLOSED"
+      ],
+      "limits": {
+        "free": 10,
+        "paid": 100
+      }
+    },
+    {
+      "name": "x402_payment",
+      "description": "Lightning Network micropayments for service access",
+      "status": "experimental",
+      "endpoint": "POST /x402/invoice — request payment invoice",
+      "limits": {
+        "free": "limited by quota above",
+        "paid": "pay-per-use via Lightning"
+      }
+    }
+  ],
+  "limits": {
+    "free_tier": {
+      "aliases": 10,
+      "ingests_per_month": 500,
+      "workflows": 50,
+      "escalations": 10,
+      "vault_storage_kb": 1024
+    },
+    "rate_limits": {
+      "alias_creation": "10 per hour per IP",
+      "ingest": "30 per minute per IP",
+      "health_check": "unlimited"
+    }
+  },
+  "pricing": {
+    "model": "x402 micropayments (experimental)",
+    "tiers": [
+      {
+        "name": "free",
+        "cost": 0,
+        "description": "Development and evaluation"
+      },
+      {
+        "name": "hobby",
+        "cost": "5000 sats/mo",
+        "description": "Production for single agent"
+      },
+      {
+        "name": "agent",
+        "cost": "25000 sats/mo",
+        "description": "Multi-agent operations"
+      },
+      {
+        "name": "autonomous",
+        "cost": "100000 sats/mo",
+        "description": "Unlimited agent operations"
+      }
+    ],
+    "payment_channel": "Lightning Network (BTC)",
+    "payment_endpoint": "POST /x402/invoice"
+  },
+  "protocol": {
+    "error_format": {
+      "error": true,
+      "code": "ERROR_CODE",
+      "message": "Human-readable description",
+      "retryable": false,
+      "retry_after_seconds": null
+    },
+    "error_codes": {
+      "ALIAS_NOT_FOUND": {
+        "message": "No matching alias for the given email",
+        "retryable": false
+      },
+      "ALIAS_EXISTS": {
+        "message": "Alias name already in use",
+        "retryable": false
+      },
+      "INGEST_FAILED": {
+        "message": "Could not parse or store the email body",
+        "retryable": true
+      },
+      "RATE_LIMITED": {
+        "message": "Too many requests",
+        "retryable": true,
+        "retry_after_seconds": 60
+      },
+      "PAYMENT_REQUIRED": {
+        "message": "Free tier quota exceeded; payment required",
+        "retryable": true
+      },
+      "SERVICE_UNAVAILABLE": {
+        "message": "Service temporarily unavailable",
+        "retryable": true
+      },
+      "NOT_FOUND": {
+        "message": "The requested resource was not found",
+        "retryable": false
+      },
+      "INVALID_REQUEST": {
+        "message": "Malformed request",
+        "retryable": false
+      }
+    },
+    "retry_semantics": {
+      "retryable_errors": [
+        "INGEST_FAILED",
+        "RATE_LIMITED",
+        "PAYMENT_REQUIRED",
+        "SERVICE_UNAVAILABLE"
+      ],
+      "non_retryable_errors": [
+        "ALIAS_NOT_FOUND",
+        "ALIAS_EXISTS",
+        "NOT_FOUND",
+        "INVALID_REQUEST"
+      ],
+      "default_backoff": "exponential with jitter, initial 1s, max 60s"
+    },
+    "http_headers": {
+      "rate_limit": "X-RateLimit-Remaining, X-RateLimit-Reset, Retry-After",
+      "retry": "Retry-After (seconds)",
+      "content": "Content-Type: application/json",
+      "auth": "X-402-Payment (Lightning invoice payment hash) — experimental"
+    }
+  },
+  "autonomous_onboarding": [
+    {
+      "step": 1,
+      "action": "GET /capabilities",
+      "description": "Discover Courier capabilities and limits"
+    },
+    {
+      "step": 2,
+      "action": "GET /health",
+      "description": "Verify service availability"
+    },
+    {
+      "step": 3,
+      "action": "POST /alias",
+      "description": "Create an inbound communication alias"
+    },
+    {
+      "step": 4,
+      "action": "POST /incoming",
+      "description": "Send an operational message"
+    },
+    {
+      "step": 5,
+      "action": "GET /messages",
+      "description": "Retrieve extracted codes and links"
+    },
+    {
+      "step": 6,
+      "action": "Workflow checkpoint",
+      "description": "Continue multi-step execution"
+    }
+  ],
+  "integration_examples": {
+    "curl_create_alias": "curl -X POST https://getcourier.dev/alias -H \"Content-Type: application/json\" -d '{\"alias\":\"my-agent\",\"purpose\":\"test\"}'",
+    "curl_send_email": "curl -X POST https://getcourier.dev/incoming -H \"X-Forwarded-To: my-agent@inbox.getcourier.dev\" -H \"Content-Type: text/plain\" -d \"From: sender@example.com\\nSubject: Verification\\n\\nYour code is 123456\"",
+    "curl_get_messages": "curl -s https://getcourier.dev/messages?limit=5",
+    "autonomous_flow": "GET capabilities → POST alias → POST incoming → GET messages → extract codes → continue workflow"
+  },
+  "discoverability": {
+    "llms_txt": "https://getcourier.dev/llms.txt",
+    "agent_json": "https://getcourier.dev/agent.json",
+    "openapi": "https://getcourier.dev/openapi.json",
+    "capabilities": "https://getcourier.dev/capabilities",
+    "mcp": {
+      "server": "courier",
+      "transport": "HTTP/JSON",
+      "tools": [
+        "create_alias",
+        "ingest_message",
+        "get_messages",
+        "check_health"
+      ]
+    }
+  },
+  "continuity_guarantees": {
+    "alias_persistence": "Aliases survive service restart",
+    "message_persistence": "Messages are stored on disk and survive service restart",
+    "vault_encryption": "AES-256-GCM, recovery key exportable",
+    "uptime_target": "99.5%",
+    "restart_recovery": "< 2 seconds typical",
+    "backup": "Daily automatic, manual on-demand"
+  }
+}

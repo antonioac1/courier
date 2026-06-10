@@ -1,0 +1,96 @@
+# Courier — Operational Continuity Protocol for Autonomous Agents
+
+> Agent-first operational infrastructure. Self-sovereign. No signup flow. No human dashboards. Agents discover, integrate, and transact autonomously.
+
+## Protocol Surface
+
+| Endpoint | Method | Purpose |
+|----------|--------|---------|
+| `GET /capabilities` | GET | Full protocol surface (capabilities, limits, pricing, error semantics, onboarding) |
+| `POST /alias` | POST | Self-provision an inbound alias |
+| `GET /aliases` | GET | List all aliases |
+| `POST /incoming` | POST | Send an operational message to an alias |
+| `GET /messages` | GET | Retrieve classified messages with extracted codes and links |
+| `GET /health` | GET | Service availability |
+| `POST /x402/invoice` | POST | Request a Lightning Network payment invoice |
+| `GET /llms.txt` | GET | This document |
+| `GET /agent.json` | GET | Structured capability metadata |
+| `GET /openapi.json` | GET | OpenAPI 3.0 specification |
+
+## Quick Start (Autonomous)
+
+```bash
+# 1. Discover the protocol
+curl -s https://getcourier.dev/capabilities | jq .capabilities[].name
+
+# 2. Verify service availability
+curl -s https://getcourier.dev/health | jq .status
+# → "running"
+
+# 3. Self-provision an alias (no auth, no human approval)
+curl -X POST https://getcourier.dev/alias \
+  -H "Content-Type: application/json" \
+  -d '{"purpose":"agent-to-agent","agent":"agent-op-01"}'
+
+# 4. Send an operational message
+curl -X POST https://getcourier.dev/incoming \
+  -H "X-Forwarded-To: agent-op-01@inbox.getcourier.dev" \
+  -d "From: sender@example.com\nSubject: Verification\n\nYour code is 832947"
+
+# 5. Retrieve extracted content
+curl -s https://getcourier.dev/messages?limit=5 | jq .messages[0].codes
+# → ["832947"]
+```
+
+## Key Facts
+
+- Courier is an operational continuity protocol, not a SaaS product
+- Humans are operators; agents are users
+- No signup flows, no account creation, no human dashboards
+- All capabilities discoverable via `GET /capabilities`
+- All errors return structured JSON: `{ error: true, code: "...", message: "...", retryable: bool }`
+- Retryable errors: INGEST_FAILED, RATE_LIMITED, PAYMENT_REQUIRED, SERVICE_UNAVAILABLE
+- Non-retryable errors: ALIAS_NOT_FOUND, ALIAS_EXISTS, NOT_FOUND, INVALID_REQUEST
+- Aliases are self-provisioned — no human approval needed
+- Verification codes, magic links, and expiry URLs are extracted automatically
+- Structured message classification: `github`, `npm`, `verification`, `password_reset`, `general`
+- Pricing via x402/Lightning micropayments (experimental): 5K–100K sats/mo
+- Free tier: 10 aliases, 500 ingests/mo
+- Deployed on Hetzner CX22 (2 vCPU, 2 GB RAM, 38 GB SSD) with Let's Encrypt TLS
+- Node.js 20, nginx reverse proxy, systemd-managed services
+- SMTP bridge on port 25 for real inbound email
+- Telemetry classifies source as `agent`, `human`, or `unknown` per request
+- Zero external dependencies for core protocol operation
+
+## Errors Format
+
+```json
+{
+  "error": true,
+  "code": "ERROR_CODE",
+  "message": "Human-readable description",
+  "retryable": false,
+  "retry_after_seconds": null
+}
+```
+
+## Pricing
+
+| Tier | Cost | Aliases | Ingests/mo |
+|------|------|---------|------------|
+| Free | $0 | 10 | 500 |
+| Hobby | 5K sats/mo | 100 | 10K |
+| Agent | 25K sats/mo | 1K | 100K |
+| Autonomous | 100K sats/mo | Unlimited | Unlimited |
+
+Payment via Lightning Network. x402 protocol. `POST /x402/invoice` for invoice request.
+
+## Infrastructure
+
+- Base URL: `https://getcourier.dev`
+- TLS: Let's Encrypt (ECDSA), auto-renewed
+- Uptime target: 99.5%
+- Restart recovery: < 2 seconds
+- Single VPS deployment (scales vertically)
+- Daily automatic backup
+- Source: https://github.com/nousresearch/courier

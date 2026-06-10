@@ -1,0 +1,35 @@
+{
+  "name": "courier-protocol",
+  "version": "0.1.0",
+  "description": "Self-sovereign operational continuity protocol for autonomous AI agents. Zero signup. Lightning Network micropayments.",
+  "main": "examples/integration-node.js",
+  "bin": {},
+  "files": [
+    "examples/",
+    "llms.txt",
+    "agent.json",
+    "openapi.json",
+    "capabilities.json",
+    "README.md",
+    "LICENSE"
+  ],
+  "keywords": [
+    "mcp",
+    "modelcontextprotocol",
+    "agent-infrastructure",
+    "autonomous-agents",
+    "operational-continuity",
+    "x402",
+    "lightning-network",
+    "message-queue",
+    "agent-communication"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/nousresearch/courier.git"
+  },
+  "license": "MIT",
+  "engines": {
+    "node": ">=18"
+  }
+}

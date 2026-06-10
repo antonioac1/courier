@@ -1,0 +1,22 @@
+# Patch/debug artifacts — never committed
+*-broken.js
+patch-*.js
+*.bak*
+*.tgz
+
+# System files
+.DS_Store
+Thumbs.db
+*.swp
+*.swo
+
+# Secrets
+.env
+.env.*
+*.key
+*.enc
+credentials/
+
+# Logs
+*.log
+telemetry/

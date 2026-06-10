@@ -1,0 +1,54 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Validate JSON files
+        run: |
+          echo "=== Validating JSON files ==="
+          for f in agent.json openapi.json capabilities.json; do
+            if [ -f "$f" ]; then
+              echo -n "  $f: "
+              node -e "JSON.parse(require('fs').readFileSync('$f','utf8'))" && echo "OK" || exit 1
+            else
+              echo "  SKIP $f (not found)"
+            fi
+          done
+
+      - name: Validate integration-node.js syntax
+        run: |
+          echo "=== Checking Node.js syntax ==="
+          node --check examples/integration-node.js && echo "  integration-node.js: syntax OK"
+
+      - name: Validate autonomous-onboarding.sh syntax
+        run: |
+          echo "=== Checking shell script ==="
+          bash -n examples/autonomous-onboarding.sh && echo "  autonomous-onboarding.sh: syntax OK"
+
+      - name: Validate markdown files
+        run: |
+          echo "=== Checking markdown files exist ==="
+          for f in README.md llms.txt specs/autonomous-onboarding.md \
+                   ecosystem/awesome-mcp-servers.md ecosystem/mcp-ecosystem-submission.md \
+                   ecosystem/npm-package.md lightning/x402-spec.md; do
+            if [ -f "$f" ]; then
+              echo "  $f: found"
+            else
+              echo "  MISSING: $f"
+              exit 1
+            fi
+          done
