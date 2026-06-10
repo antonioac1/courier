@@ -1,4 +1,6 @@
-# Courier — Operational Continuity Protocol
+# Courier
+
+**GitHub:** [github.com/antonioac1/courier](https://github.com/antonioac1/courier) — Operational Continuity Protocol
 
 **Protocol name:** Courier  
 **Base URL:** `https://getcourier.dev`  
@@ -105,4 +107,4 @@ Payment via Lightning Network. `POST /x402/invoice` for invoice request.
 - **Uptime target:** 99.5%
 - **Restart recovery:** < 2 seconds
 - **Backup:** Daily automatic
-- **Source:** https://github.com/nousresearch/courier
+- **Source:** https://github.com/antonioac1/courier
