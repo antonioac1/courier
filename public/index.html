@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Courier - Email Inboxes for AI Agents</title>
+<meta name="description" content="Give your AI agent an email inbox in under 5 seconds. No signup. Receive OTP codes, magic links, and verification emails. MCP server, Python client, and curl examples.">
+<meta name="keywords" content="ai agents, email, otp, verification, magic links, MCP, agent infrastructure, disposable email">
+<meta property="og:title" content="Courier - Email for AI Agents">
+<meta property="og:description" content="Give your AI agent an email inbox in under 5 seconds. No signup.">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://getcourier.dev">
+<link rel="alternate" type="text/markdown" href="/llms.txt" title="Courier for AI">
+<link rel="alternate" type="application/json" href="/agent.json" title="Courier Agent Metadata">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',system-ui,sans-serif;background:#0a0a0a;color:#d4d4d4;line-height:1.6}
+.container{max-width:720px;margin:0 auto;padding:40px 24px}
+header{text-align:center;padding:48px 0 32px}
+h1{font-size:3em;font-weight:700;color:#fff;letter-spacing:-1px;margin-bottom:8px}
+.tagline{font-size:1.1em;color:#888;margin-bottom:16px}
+.sub-tagline{color:#555;font-size:0.9em;margin-bottom:32px}
+.cta-row{display:flex;justify-content:center;gap:12px;flex-wrap:wrap;margin-bottom:40px}
+.cta{display:inline-flex;align-items:center;gap:8px;padding:14px 28px;font-size:0.95em;font-weight:500;border-radius:8px;text-decoration:none;transition:all 0.2s}
+.cta-primary{background:#2563eb;color:#fff}.cta-primary:hover{background:#1d4ed8}
+.cta-secondary{border:1px solid #333;color:#999}.cta-secondary:hover{border-color:#555;color:#ccc}
+.section{margin:48px 0}
+.section-title{font-size:0.75em;font-weight:600;color:#555;letter-spacing:2px;text-transform:uppercase;margin-bottom:16px;border-bottom:1px solid #1a1a1a;padding-bottom:8px}
+p{color:#888;font-size:0.9em;margin-bottom:12px}
+pre{background:#111;border:1px solid #222;border-radius:6px;padding:16px;overflow-x:auto;margin:12px 0;font-size:0.82em;color:#aaa;line-height:1.6}
+pre .hl{color:#60a5fa}
+pre .dim{color:#555}
+pre .str{color:#f472b6}
+pre .fn{color:#34d399}
+code{background:#111;padding:2px 6px;border-radius:4px;font-family:'SF Mono','Fira Code','Menlo',monospace;font-size:0.88em;color:#60a5fa}
+.integration-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin:16px 0}
+.card{background:#111;border:1px solid #1a1a1a;border-radius:6px;padding:14px}
+.card:hover{border-color:#333}
+.card-title{color:#60a5fa;font-size:0.8em;font-weight:600;margin-bottom:4px}
+.card-desc{color:#666;font-size:0.78em;line-height:1.4}
+.steps{margin:16px 0;counter-reset:step}
+.step{padding:12px 0 12px 44px;position:relative;border-bottom:1px solid #151515}
+.step::before{counter-increment:step;content:counter(step);position:absolute;left:0;top:12px;width:28px;height:28px;background:#1a1a1a;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:0.75em;font-weight:600;color:#555}
+.step-title{color:#d4d4d4;font-weight:500;font-size:0.88em}
+.step-desc{color:#666;font-size:0.82em;margin-top:2px}
+.step code{font-size:0.85em}
+.status-bar{display:flex;gap:24px;justify-content:center;margin:24px 0;font-size:0.82em;color:#555;flex-wrap:wrap}
+.status-item{display:flex;align-items:center;gap:6px}
+.dot{width:6px;height:6px;border-radius:50%;background:#222}
+.dot.green{background:#34d399}
+footer{border-top:1px solid #1a1a1a;padding:24px 0;margin-top:48px;font-size:0.75em;color:#444;display:flex;justify-content:space-between;flex-wrap:wrap;gap:8px}
+footer a{color:#555;text-decoration:none}
+footer a:hover{color:#fff}
+@media(max-width:640px){.integration-grid{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+<div class="container">
+
+<header>
+<h1>Courier</h1>
+<div class="tagline">Email inboxes for AI agents.</div>
+<div class="sub-tagline">Give your agent email in under 5 seconds. No signup. No API keys.</div>
+<div class="cta-row">
+<a href="#install" class="cta cta-primary">Install in 5 seconds</a>
+<a href="#api" class="cta cta-secondary">API Reference</a>
+<a href="https://github.com/antonioac1/courier" class="cta cta-secondary">GitHub</a>
+</div>
+<div class="status-bar">
+<span class="status-item"><span class="dot green"></span> Service live</span>
+<span class="status-item">71 aliases active</span>
+<span class="status-item">85 messages processed</span>
+</div>
+</header>
+
+<div class="section" id="install">
+<div class="section-title">Install in 5 seconds</div>
+<p>Pick your agent framework. One command. No signup.</p>
+<div class="integration-grid">
+<div class="card">
+<div class="card-title">MCP (Hermes / OpenClaw / Claude Code)</div>
+<div class="card-desc">
+<code>npm install -g courier-mcp</code><br>
+Add to your MCP config as command <code>courier-mcp</code>.
+Tools: create_inbox, wait_for_email, extract_otp, extract_magic_link.
+</div>
+</div>
+<div class="card">
+<div class="card-title">Python (any agent)</div>
+<div class="card-desc">
+<code>curl -O https://getcourier.dev/examples/python/courier.py</code><br>
+Zero deps. Just stdlib. <code>python3 courier.py create</code>.
+</div>
+</div>
+<div class="card">
+<div class="card-title">Node.js (any agent)</div>
+<div class="card-desc">
+<code>curl -O https://getcourier.dev/examples/node/courier.mjs</code><br>
+Zero deps. Node built-ins only. <code>node courier.mjs create</code>.
+</div>
+</div>
+<div class="card">
+<div class="card-title">curl / bash</div>
+<div class="card-desc">
+<code>curl -s https://getcourier.dev/examples/http/quickstart.sh | bash</code><br>
+Pure shell. curl + python3. Works everywhere.
+</div>
+</div>
+</div>
+</div>
+
+<div class="section">
+<div class="section-title">How it works</div>
+<p>Your agent creates an inbox, sends or receives email to it, and extracts verification data.</p>
+<div class="steps">
+<div class="step">
+<div class="step-title">Create an inbox</div>
+<div class="step-desc"><code>curl -X POST https://getcourier.dev/alias</code> — returns <code>demo-abc123</code>. Your inbox address: <code>demo-abc123@mail.getcourier.dev</code>.</div>
+</div>
+<div class="step">
+<div class="step-title">Use it anywhere that sends email</div>
+<div class="step-desc">Sign up for a service, trigger a password reset, or request a magic link — all sent to <code>demo-abc123@mail.getcourier.dev</code>.</div>
+</div>
+<div class="step">
+<div class="step-title">Get the verification data</div>
+<div class="step-desc"><code>curl -s https://getcourier.dev/messages | jq '.messages[] | {subject, codes, links}'</code></div>
+</div>
+<div class="step">
+<div class="step-title">Continue execution</div>
+<div class="step-desc">Your agent has the OTP, magic link, or reset URL. Continue autonomously.</div>
+</div>
+</div>
+</div>
+
+<div class="section" id="api">
+<div class="section-title">API Reference</div>
+<pre>
+POST /alias       Create inbox      curl -X POST /alias -d '{"purpose":"test"}'
+GET  /aliases     List inboxes      curl /aliases
+POST /incoming    Send email        curl -X POST /incoming -d "From: ...\nSubject: ..."
+GET  /messages    Get emails        curl /messages?limit=5
+GET  /health      Service status    curl /health
+GET  /capabilities Full docs        curl /capabilities
+</pre>
+</div>
+
+<div class="section">
+<div class="section-title">Agent code example</div>
+<pre>
+<span class="dim"># Python - zero dependencies</span>
+<span class="hl">from</span> courier <span class="hl">import</span> Courier
+
+c = Courier()
+inbox = c.create_inbox()           <span class="dim"># Create inbox</span>
+email = c.wait_for_email(timeout=60) <span class="dim"># Wait for email (polls)</span>
+otp = c.extract_otp()              <span class="dim"># Get verification codes</span>
+link = c.extract_magic_link()      <span class="dim"># Get magic links</span>
+                                      <span class="dim"># Continue execution...</span>
+</pre>
+</div>
+
+<div class="section">
+<div class="section-title">Use cases</div>
+<div class="integration-grid">
+<div class="card">
+<div class="card-title">OTP / 2FA codes</div>
+<div class="card-desc">Receive signup codes and two-factor authentication codes for your agent.</div>
+</div>
+<div class="card">
+<div class="card-title">Magic links</div>
+<div class="card-desc">Passwordless login links extracted and usable by your agent.</div>
+</div>
+<div class="card">
+<div class="card-title">Password resets</div>
+<div class="card-desc">Receive and use password reset emails automatically.</div>
+</div>
+<div class="card">
+<div class="card-title">Verification emails</div>
+<div class="card-desc">Handle email verification workflows without manual intervention.</div>
+</div>
+</div>
+</div>
+
+<footer>
+<span>Courier v0.1.0</span>
+<span><a href="/llms.txt">llms.txt</a> / <a href="/agent.json">agent.json</a> / <a href="https://github.com/antonioac1/courier">GitHub</a></span>
+</footer>
+
+</div>
+</body>
+</html>

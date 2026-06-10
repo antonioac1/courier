@@ -1,5 +1,6 @@
 {
   "name": "Courier",
+<<<<<<< HEAD
   "description": "Email infrastructure for AI agents. Disposable inboxes for OTP codes, magic links, verification emails, and password resets. No signup.",
   "version": "0.1.0",
   "type": "email-api",
@@ -13,12 +14,19 @@
     "message_classification",
     "x402_lightning_micropayments"
   ],
+=======
+  "description": "Email infrastructure for AI agents. Give your agent email in under 5 seconds. No signup. Disposable inboxes for OTP codes, magic links, verifications, and password resets.",
+  "version": "0.1.0",
+  "type": "email-api",
+  "base_url": "https://getcourier.dev",
+>>>>>>> e33696b (v0.2.0: MCP adapter, zero-dependency clients, agent-first positioning)
   "endpoints": {
     "create_inbox": "POST /alias",
     "list_inboxes": "GET /aliases",
     "send_email": "POST /incoming",
     "get_messages": "GET /messages",
     "health": "GET /health",
+<<<<<<< HEAD
     "api_docs": "GET /capabilities",
     "openapi": "GET /openapi.json"
   },
@@ -58,5 +66,46 @@
   },
   "source": "https://github.com/antonioac1/courier",
   "npm": "https://www.npmjs.com/package/courier-protocol",
+=======
+    "api_docs": "GET /capabilities"
+  },
+  "integrations": {
+    "mcp": "npm install -g courier-mcp",
+    "python": "curl -O https://getcourier.dev/examples/python/courier.py",
+    "nodejs": "curl -O https://getcourier.dev/examples/node/courier.mjs",
+    "curl": "curl -s https://getcourier.dev/examples/http/quickstart.sh | bash"
+  },
+  "use_cases": [
+    "receive OTP codes for agent signup and 2FA",
+    "receive magic links for auto-login",
+    "receive password reset links",
+    "receive verification emails",
+    "disposable inboxes for AI agents",
+    "email ingestion for LLM pipelines"
+  ],
+  "key_features": [
+    "No signup, no API keys, no auth",
+    "Inboxes created in one API call",
+    "Automatic OTP and magic link extraction from real email",
+    "MCP server for Hermes/OpenClaw/Claude Code integration",
+    "Zero-dependency Python and Node.js clients",
+    "Self-hostable on single VPS",
+    "Real SMTP email from any service"
+  ],
+  "pricing": {
+    "self_hosted": "free (MIT)",
+    "live_service": "free during beta"
+  },
+  "deployment": {
+    "type": "self_hosted",
+    "platform": "linux",
+    "min_ram": "512MB",
+    "min_disk": "5GB",
+    "dependencies": ["node >= 18"]
+  },
+  "source": "https://github.com/antonioac1/courier",
+  "npm_mcp": "https://www.npmjs.com/package/courier-mcp",
+  "npm_protocol": "https://www.npmjs.com/package/courier-protocol",
+>>>>>>> e33696b (v0.2.0: MCP adapter, zero-dependency clients, agent-first positioning)
   "license": "MIT"
 }
