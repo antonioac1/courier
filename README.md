@@ -1,3 +1,9 @@
+<!--
+Repository: https://github.com/antonioac1/courier
+Topics: temporary-email, ai-agent-inbox, otp-extraction, magic-link-receiver, disposable-email, mcp, modelcontextprotocol, autonomous-agents, email-verification, inbound-email, agent-infrastructure
+Description: Temporary email inboxes for AI agents. Receive OTP codes, magic links, verification emails, and password resets. No signup. curl | npm install | pip install — 5 seconds to inbox.
+-->
+
 # Courier — Temporary Email Inboxes for AI Agents
 
 <div align="center">
