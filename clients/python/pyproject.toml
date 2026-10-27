@@ -1,0 +1,36 @@
+[build-system]
+requires = ["setuptools>=61"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "getcourier"
+version = "0.1.0"
+description = "Email inboxes for AI agents: create an inbox in one call and wait for the verification code. Client + CLI for getcourier.dev."
+readme = "README.md"
+requires-python = ">=3.9"
+license = { text = "MIT" }
+authors = [{ name = "Nuvidian" }]
+keywords = [
+    "email",
+    "inbox",
+    "ai-agents",
+    "verification-code",
+    "magic-link",
+    "mcp",
+]
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: OS Independent",
+    "Topic :: Communications :: Email",
+]
+
+[project.urls]
+Homepage = "https://getcourier.dev"
+Source = "https://github.com/antonioac1/courier"
+
+[project.scripts]
+getcourier = "getcourier.cli:main"
+
+[tool.setuptools.packages.find]
+where = ["src"]
