@@ -1,0 +1,41 @@
+{
+  "name": "getcourier",
+  "version": "0.1.0",
+  "description": "Email inboxes for AI agents: create an inbox in one call and wait for the verification code. Client + CLI for getcourier.dev.",
+  "keywords": [
+    "ai-agents",
+    "email-inbox",
+    "verification-code",
+    "otp",
+    "magic-link",
+    "mcp",
+    "agent-email"
+  ],
+  "license": "MIT",
+  "homepage": "https://getcourier.dev",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/antonioac1/courier.git"
+  },
+  "bugs": {
+    "url": "https://github.com/antonioac1/courier/issues"
+  },
+  "main": "index.js",
+  "types": "index.d.ts",
+  "bin": {
+    "getcourier": "bin/getcourier.js"
+  },
+  "files": [
+    "index.js",
+    "index.d.ts",
+    "bin/getcourier.js",
+    "README.md",
+    "LICENSE"
+  ],
+  "scripts": {
+    "test": "node test/selftest.js"
+  },
+  "engines": {
+    "node": ">=18"
+  }
+}
