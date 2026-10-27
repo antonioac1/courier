@@ -151,7 +151,7 @@ Message bodies are encrypted at rest with AES-256-GCM, and an inbox accepts mail
 
 **Other limits.** 100 messages per inbox; message `text` is truncated to 4000 characters in the agent view; `wait` clamps `timeout` to 1–55 seconds. Inboxes are receive-only — GetCourier does not send email.
 
-**Paid credits: coming soon.** The credit system is built but paid usage is not switched on yet. The numbers, for planning: 1 credit = US$0.0001; a 72-hour inbox is 100 credits (US$0.01) and a 30-day inbox is 2000 credits (US$0.20). Deposits are USDC on Base or BTC on-chain. `GET https://getcourier.dev/v1/pricing` is authoritative: while its `rails` list is empty, only the free tier is available. Paid inboxes consume no free quota.
+**Paid credits: live.** 1 credit = US$0.0001; a 72-hour inbox is 100 credits (US$0.01) and a 30-day inbox is 2000 credits (US$0.20). Create an account (`POST /v1/accounts`), request a deposit (`POST /v1/deposits` with `usdc-base` or `btc`, minimum US$1), pay the exact amount from your own wallet, and use the `account_key` as a Bearer token. No signup, no card. `GET /v1/pricing` is authoritative.
 
 ## Client libraries
 

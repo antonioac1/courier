@@ -150,7 +150,7 @@ Any other client that speaks streamable HTTP can use the same URL (POST JSON-RPC
 - Over the limit you get `402 FREE_QUOTA_EXCEEDED` with `retry_after_seconds` (exposed as `err.retry_after`).
 - Each inbox holds 100 messages; message `text` is truncated to 4000 characters.
 - `wait` timeouts are 1–55 seconds per poll; this client retries polls automatically until your deadline.
-- Paid crypto credits (longer inboxes) are built but **coming soon** — check `GET /v1/pricing` for live rails.
+- Paid crypto credits (longer inboxes): USDC on Base or BTC on-chain, minimum deposit US$1. `GET /v1/pricing` lists rails and deposit addresses.
 
 ## Links
 
