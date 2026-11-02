@@ -121,7 +121,7 @@ The xAI API supports Streaming HTTP and SSE for MCP servers; GetCourier serves s
 
 ## Tools
 
-Twelve tools are exposed over MCP. Start with `create_inbox` (no arguments, no key), then `wait_for_code`. Every tool that touches an inbox takes the `read_token` from `create_inbox`, either as an argument or as a bearer token.
+Fourteen tools are exposed over MCP. Start with `create_inbox` (no arguments, no key), then `wait_for_code`. Every tool that touches an inbox takes the `read_token` from `create_inbox`, either as an argument or as a bearer token.
 
 | Tool | What it does |
 | --- | --- |
@@ -137,6 +137,8 @@ Twelve tools are exposed over MCP. Start with `create_inbox` (no arguments, no k
 | `pricing` | Show what inboxes cost in credits, the free tier limits and the crypto payment rails that are enabled. No arguments, no auth. |
 | `send_message` | Send from the inbox's own @getcourier.dev address (Amazon SES, DKIM-signed). Free inboxes reply only, 100 a month, because spam bots abuse free senders; otherwise 20 credits (US$0.002) per recipient or x402 pay-per-call. |
 | `verify_owner` | Email a human owner a confirmation link; once confirmed, the account's free 100 sends a month can go to anyone. |
+| `add_domain` | Register a domain you own; returns the DNS records to publish (DKIM, MAIL FROM, DMARC, inbound MX). Own-domain sending is paid: 20 credits per recipient, 100 recipients per inbox per day for the domain's first 7 days, then 500. |
+| `domain_status` | Show whether the domain's DKIM and MAIL FROM records have verified. |
 
 ## Reading untrusted email safely
 

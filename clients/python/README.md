@@ -132,6 +132,8 @@ getcourier.send_message(inbox, "person@example.com", "Re: your code", text="Than
 Unlock sending to anyone with credits, x402 pay-per-call, or `getcourier.verify_owner(account_key, owner_email)`.
 Rules and prices: https://getcourier.dev/terms and https://getcourier.dev/v1/pricing
 
+Own domain: verify a domain you own (`POST /v1/sandbox/domains`, or the MCP tool `add_domain`) and create inboxes on it; own-domain sending is paid (20 credits per recipient), 100 recipients per inbox per day for the domain's first 7 days, then 500.
+
 ## Hosted MCP alternative (no package needed)
 
 GetCourier also runs a stateless streamable-HTTP MCP server at `https://getcourier.dev/mcp` with the tools `create_inbox`, `wait_for_code`, `list_messages`, `get_message`, `delete_inbox`, `pricing` and more.
