@@ -1,0 +1,30 @@
+name: Publish Python SDK to PyPI
+
+# Trusted Publishing (OIDC): no token is stored anywhere. Push a tag like sdk-v0.2.0 to publish clients/python.
+on:
+  push:
+    tags:
+      - 'sdk-v*'
+
+jobs:
+  pypi:
+    runs-on: ubuntu-latest
+    environment: pypi
+    permissions:
+      contents: read
+      id-token: write
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Test and build
+        working-directory: clients/python
+        run: |
+          PYTHONPATH=src python tests/selftest.py
+          pip install build
+          python -m build
+      - name: Publish to PyPI
+        uses: pypa/gh-action-pypi-publish@release/v1
+        with:
+          packages-dir: clients/python/dist/

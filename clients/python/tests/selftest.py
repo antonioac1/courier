@@ -112,7 +112,7 @@ def test_create():
     check(call["method"] == "POST", "create_inbox posts")
     check(call["url"] == getcourier.DEFAULT_BASE_URL + "/alias", "create_inbox endpoint")
     headers = {k.lower(): v for k, v in call["headers"].items()}
-    check(headers.get("user-agent") == "getcourier-py/0.1.0", "user-agent header")
+    check(headers.get("user-agent") == "getcourier-py/0.2.0", "user-agent header")
     check(headers.get("accept") == "application/json", "accept header")
     check(headers.get("content-type") == "application/json", "content-type header")
     check(json.loads(call["body"].decode("utf-8")) == {"purpose": "signup", "agent": "build-bot-7"}, "post body")
@@ -208,6 +208,25 @@ def test_delete():
     check(call["url"].endswith("/v1/sandbox/inboxes/build-bot-k3xmqz"), "delete endpoint")
 
 
+def test_send():
+    CALLS.clear()
+    out = with_fake(lambda req: FakeResponse({"send_id": "snd_1", "status": "sent"}),
+                    lambda: getcourier.send_message("build-bot-k3xmqz", "a@example.com", "Re: hi", text="thanks", read_token="rt_test_123", account_key="cak_1"))
+    check(out["status"] == "sent", "send_message returns status")
+    call = CALLS[0]
+    headers = {k.lower(): v for k, v in call["headers"].items()}
+    check(call["method"] == "POST" and call["url"].endswith("/v1/sandbox/inboxes/build-bot-k3xmqz/send"), "send endpoint")
+    check(headers.get("authorization") == "Bearer rt_test_123" and headers.get("x-account-key") == "cak_1", "send auth headers")
+    check(json.loads(call["body"].decode("utf-8")) == {"to": ["a@example.com"], "subject": "Re: hi", "text": "thanks"}, "send body")
+    try:
+        getcourier.send_message("a", [], "s", text="t", read_token="t"); check(False, "empty to rejected")
+    except getcourier.GetCourierError:
+        check(True, "empty to rejected")
+    CALLS.clear()
+    with_fake(lambda req: FakeResponse({"sent": True}), lambda: getcourier.verify_owner("cak_1", "owner@example.com"))
+    check(json.loads(CALLS[0]["body"].decode("utf-8")) == {"email": "owner@example.com"}, "verify_owner body")
+
+
 def test_cli_no_args():
     real_create = cli.create_inbox
     real_stdout = sys.stdout
@@ -249,7 +268,7 @@ def test_cli_no_args():
 
 
 def main():
-    tests = [test_create, test_wait, test_quota, test_delete, test_cli_no_args]
+    tests = [test_create, test_wait, test_quota, test_delete, test_send, test_cli_no_args]
     for test in tests:
         print("-- " + test.__name__)
         test()

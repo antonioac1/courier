@@ -4,8 +4,8 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "getcourier"
-version = "0.1.0"
-description = "Email inboxes for AI agents: create an inbox in one call and wait for the verification code. Client + CLI for getcourier.dev."
+version = "0.2.0"
+description = "Email for AI agents: create an inbox in one call, wait for the verification code, reply and send. Client + CLI for getcourier.dev."
 readme = "README.md"
 requires-python = ">=3.9"
 license = { text = "MIT" }

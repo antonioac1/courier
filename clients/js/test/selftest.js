@@ -139,7 +139,7 @@ async function testCreate() {
   const call = calls[0];
   assert.strictEqual(call.url, 'https://getcourier.dev/alias', 'POSTs to /alias');
   assert.strictEqual(call.method, 'POST');
-  assert.strictEqual(call.headers['user-agent'], 'getcourier-js/0.1.0', 'sends the package User-Agent');
+  assert.strictEqual(call.headers['user-agent'], 'getcourier-js/0.2.0', 'sends the package User-Agent');
   assert.deepStrictEqual(call.body, {
     alias: 'my-agent',
     purpose: 'signing up for an API key',
@@ -312,6 +312,28 @@ async function testDelete() {
   assert.strictEqual(calls[0].headers.authorization, 'Bearer rt_test_token');
 }
 
+async function testSendMessage() {
+  const { fetchMock, calls } = makeFetch([{ method: 'POST', path: '/v1/sandbox/inboxes/my-agent-k3xmqz/send', status: 202, body: { send_id: 'snd_1', status: 'sent' } }]);
+  const out = await lib.sendMessage({ alias: 'my-agent-k3xmqz', readToken: 'rt_test_token' }, { to: 'a@example.com', subject: 'Re: hi', text: 'thanks', inReplyTo: '<m1@x>', accountKey: 'cak_1', fetch: fetchMock });
+  assert.strictEqual(out.status, 'sent');
+  assert.strictEqual(calls[0].headers.authorization, 'Bearer rt_test_token');
+  assert.strictEqual(calls[0].headers['x-account-key'], 'cak_1');
+  assert.deepStrictEqual(calls[0].body, { to: ['a@example.com'], subject: 'Re: hi', text: 'thanks', in_reply_to: '<m1@x>' });
+  await assert.rejects(lib.sendMessage({ alias: 'a', readToken: 't' }, { to: [], subject: 's', text: 't', fetch: fetchMock }), /to/);
+}
+
+async function testSendReplyOnlyError() {
+  const { fetchMock } = makeFetch([{ method: 'POST', path: '/send', status: 403, body: { error: 'REPLY_ONLY', message: 'Free inboxes can only reply' } }]);
+  await assert.rejects(lib.sendMessage({ alias: 'a', readToken: 't' }, { to: 'x@y.z', subject: 's', text: 't', fetch: fetchMock }), (e) => e.code === 'REPLY_ONLY' || /REPLY_ONLY|reply/i.test(String(e.message)));
+}
+
+async function testVerifyOwner() {
+  const { fetchMock, calls } = makeFetch([{ method: 'POST', path: '/v1/sandbox/owner/verify', status: 200, body: { sent: true } }]);
+  await lib.verifyOwner('cak_1', 'owner@example.com', { fetch: fetchMock });
+  assert.strictEqual(calls[0].headers['x-account-key'], 'cak_1');
+  assert.deepStrictEqual(calls[0].body, { email: 'owner@example.com' });
+}
+
 async function testBaseUrlOverride() {
   const previous = process.env.GETCOURIER_BASE_URL;
   process.env.GETCOURIER_BASE_URL = 'https://api.example.test/';
@@ -482,6 +504,9 @@ async function run() {
   await okAsync('Retry-After header is parsed', testRetryAfterHeaderOnly);
   await okAsync('listMessages + getMessage', testListAndGet);
   await okAsync('deleteInbox sends DELETE', testDelete);
+  await okAsync('sendMessage posts body + auth + account key', testSendMessage);
+  await okAsync('sendMessage surfaces REPLY_ONLY', testSendReplyOnlyError);
+  await okAsync('verifyOwner posts the owner email', testVerifyOwner);
   await okAsync('GETCOURIER_BASE_URL override', testBaseUrlOverride);
   await okAsync('CLI: create inbox', testCliCreate);
   await okAsync('CLI: wait <alias> --token', testCliWait);

@@ -189,3 +189,20 @@ export function listMessages(inbox: InboxRef, options?: ListMessagesOptions): Pr
 export function getMessage(inbox: InboxRef, messageId: string, options?: InboxAuthOptions): Promise<Message>;
 export function deleteInbox(inbox: InboxRef, options?: InboxAuthOptions): Promise<{ success: boolean }>;
 export function pricing(options?: RequestOptions): Promise<PricingResponse>;
+
+export interface SendMessageOptions {
+  to: string | string[];
+  subject: string;
+  text?: string;
+  html?: string;
+  cc?: string | string[];
+  replyTo?: string;
+  inReplyTo?: string;
+  /** Account key to pay from (20 credits per recipient). Without it, free inboxes are reply-only (100/month). */
+  accountKey?: string;
+  token?: string;
+  fetch?: (...args: any[]) => Promise<any>;
+  signal?: AbortSignal;
+}
+export function sendMessage(inbox: object | string, message: SendMessageOptions): Promise<{ send_id: string; status: string; [k: string]: unknown }>;
+export function verifyOwner(accountKey: string, email: string, options?: { fetch?: (...args: any[]) => Promise<any>; signal?: AbortSignal }): Promise<Record<string, unknown>>;

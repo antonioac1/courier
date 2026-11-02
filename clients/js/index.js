@@ -11,7 +11,7 @@
  *   console.log(hit.code);
  */
 
-const VERSION = '0.1.0';
+const VERSION = '0.2.0';
 const USER_AGENT = `getcourier-js/${VERSION}`;
 const DEFAULT_BASE_URL = 'https://getcourier.dev';
 const MAX_WAIT_SECONDS = 55; // server clamps `timeout` to 1..55
@@ -415,6 +415,49 @@ async function pricing(options = {}) {
   return request('/v1/pricing', { fetch: options.fetch, signal: options.signal });
 }
 
+/**
+ * Send email from the inbox's own address: POST /v1/sandbox/inboxes/{alias}/send
+ * Free inboxes reply only (to people who emailed the inbox), up to 100 a month, because spam bots abuse
+ * free email senders. Pass `accountKey` (credits, 20 per recipient) to send to anyone.
+ *
+ * @param {object|string} inbox
+ * @param {{to: string|string[], subject: string, text?: string, html?: string, cc?: string|string[],
+ *   replyTo?: string, inReplyTo?: string, accountKey?: string, token?: string, fetch?: Function, signal?: AbortSignal}} message
+ */
+async function sendMessage(inbox, message = {}) {
+  const { alias, readToken } = resolveInbox(inbox, message);
+  if (!message.to || (Array.isArray(message.to) && !message.to.length)) throw new CourierError('`to` is required.', { code: 'BAD_REQUEST' });
+  if (!message.subject) throw new CourierError('`subject` is required.', { code: 'BAD_REQUEST' });
+  if (message.text === undefined && message.html === undefined) throw new CourierError('`text` or `html` is required.', { code: 'BAD_REQUEST' });
+  const list = (v) => (v === undefined || v === null ? undefined : Array.isArray(v) ? v : [v]);
+  const body = { to: list(message.to), subject: message.subject };
+  if (message.cc !== undefined) body.cc = list(message.cc);
+  if (message.text !== undefined) body.text = message.text;
+  if (message.html !== undefined) body.html = message.html;
+  if (message.replyTo) body.reply_to = message.replyTo;
+  if (message.inReplyTo) body.in_reply_to = message.inReplyTo;
+  const headers = message.accountKey ? { 'x-account-key': message.accountKey } : {};
+  return request(`/v1/sandbox/inboxes/${encodeURIComponent(alias)}/send`, {
+    method: 'POST', body, token: readToken, headers, fetch: message.fetch, signal: message.signal,
+  });
+}
+
+/**
+ * Ask a human owner to vouch for an account: POST /v1/sandbox/owner/verify
+ * Once they click the emailed link, the account's free 100 sends a month can go to anyone.
+ *
+ * @param {string} accountKey
+ * @param {string} email
+ * @param {{fetch?: Function, signal?: AbortSignal}} [options]
+ */
+async function verifyOwner(accountKey, email, options = {}) {
+  if (!accountKey) throw new CourierError('An account key is required.', { code: 'BAD_REQUEST' });
+  if (!email) throw new CourierError('An owner email is required.', { code: 'BAD_REQUEST' });
+  return request('/v1/sandbox/owner/verify', {
+    method: 'POST', body: { email }, headers: { 'x-account-key': accountKey }, fetch: options.fetch, signal: options.signal,
+  });
+}
+
 module.exports = {
   VERSION,
   USER_AGENT,
@@ -427,6 +470,8 @@ module.exports = {
   listMessages,
   getMessage,
   deleteInbox,
+  sendMessage,
+  verifyOwner,
   pricing,
   // exposed for tests / advanced use
   _internal: { request, resolveInbox, normalizeInbox, baseUrl, clampWaitSeconds },

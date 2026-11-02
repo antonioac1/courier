@@ -18,7 +18,7 @@ import urllib.error
 import urllib.parse
 import urllib.request
 
-__version__ = "0.1.0"
+__version__ = "0.2.0"
 
 VERSION = __version__
 USER_AGENT = "getcourier-py/" + VERSION
@@ -43,6 +43,8 @@ __all__ = [
     "list_messages",
     "get_message",
     "delete_inbox",
+    "send_message",
+    "verify_owner",
     "pricing",
 ]
 
@@ -517,3 +519,45 @@ def delete_inbox(alias, read_token=None, token=None, timeout=None):
 def pricing(timeout=None):
     """Public pricing: GET /v1/pricing"""
     return _request("/v1/pricing", timeout=timeout)
+
+
+def send_message(alias, to, subject, text=None, html=None, cc=None, reply_to=None, in_reply_to=None,
+                 read_token=None, account_key=None, token=None, timeout=None):
+    """Send email from the inbox's own address: POST /v1/sandbox/inboxes/{alias}/send.
+
+    Free inboxes reply only (to people who emailed the inbox), up to 100 a month, because spam bots abuse
+    free email senders. Pass account_key (credits, 20 per recipient) to send to anyone.
+    """
+    alias, rt = _resolve_inbox(alias, token=token, read_token=read_token)
+    if not to:
+        raise GetCourierError("`to` is required.", code="BAD_REQUEST")
+    if not subject:
+        raise GetCourierError("`subject` is required.", code="BAD_REQUEST")
+    if text is None and html is None:
+        raise GetCourierError("`text` or `html` is required.", code="BAD_REQUEST")
+    as_list = lambda v: [v] if isinstance(v, str) else list(v)
+    body = {"to": as_list(to), "subject": subject}
+    if cc:
+        body["cc"] = as_list(cc)
+    if text is not None:
+        body["text"] = text
+    if html is not None:
+        body["html"] = html
+    if reply_to:
+        body["reply_to"] = reply_to
+    if in_reply_to:
+        body["in_reply_to"] = in_reply_to
+    headers = {"x-account-key": account_key} if account_key else None
+    return _request("/v1/sandbox/inboxes/%s/send" % urllib.parse.quote(alias, safe=""), method="POST",
+                    body=body, token=rt, headers=headers, timeout=timeout)
+
+
+def verify_owner(account_key, email, timeout=None):
+    """Email a human owner a confirmation link (POST /v1/sandbox/owner/verify). Once they confirm,
+    the account's free 100 sends a month can go to anyone."""
+    if not account_key:
+        raise GetCourierError("An account key is required.", code="BAD_REQUEST")
+    if not email:
+        raise GetCourierError("An owner email is required.", code="BAD_REQUEST")
+    return _request("/v1/sandbox/owner/verify", method="POST", body={"email": email},
+                    headers={"x-account-key": account_key}, timeout=timeout)
