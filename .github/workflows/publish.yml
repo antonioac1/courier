@@ -1,6 +1,6 @@
-name: Publish Python SDK to PyPI
+name: Publish SDKs (PyPI + npm)
 
-# Trusted Publishing (OIDC): no token is stored anywhere. Push a tag like sdk-v0.2.0 to publish clients/python.
+# Trusted Publishing (OIDC): no token stored anywhere. Push a tag like sdk-v0.2.1 to publish both SDKs.
 on:
   push:
     tags:
@@ -28,3 +28,25 @@ jobs:
         uses: pypa/gh-action-pypi-publish@release/v1
         with:
           packages-dir: clients/python/dist/
+
+  # npm Trusted Publishing (OIDC, no token). Needs the npm side configured once:
+  # npmjs.com > getcourier > Settings > Trusted Publisher > GitHub Actions: antonioac1/courier, publish.yml, environment npm.
+  npm:
+    runs-on: ubuntu-latest
+    environment: npm
+    permissions:
+      contents: read
+      id-token: write
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          registry-url: 'https://registry.npmjs.org'
+      - name: npm >= 11.5 (required for trusted publishing)
+        run: npm install -g npm@latest
+      - name: Test and publish
+        working-directory: clients/js
+        run: |
+          node test/selftest.js
+          npm publish --provenance --access public
