@@ -11,7 +11,7 @@
  *   console.log(hit.code);
  */
 
-const VERSION = '0.2.0';
+const VERSION = '0.2.1';
 const USER_AGENT = `getcourier-js/${VERSION}`;
 const DEFAULT_BASE_URL = 'https://getcourier.dev';
 const MAX_WAIT_SECONDS = 55; // server clamps `timeout` to 1..55

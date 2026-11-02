@@ -112,7 +112,7 @@ def test_create():
     check(call["method"] == "POST", "create_inbox posts")
     check(call["url"] == getcourier.DEFAULT_BASE_URL + "/alias", "create_inbox endpoint")
     headers = {k.lower(): v for k, v in call["headers"].items()}
-    check(headers.get("user-agent") == "getcourier-py/0.2.0", "user-agent header")
+    check(headers.get("user-agent") == "getcourier-py/0.2.1", "user-agent header")
     check(headers.get("accept") == "application/json", "accept header")
     check(headers.get("content-type") == "application/json", "content-type header")
     check(json.loads(call["body"].decode("utf-8")) == {"purpose": "signup", "agent": "build-bot-7"}, "post body")

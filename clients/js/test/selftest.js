@@ -139,7 +139,7 @@ async function testCreate() {
   const call = calls[0];
   assert.strictEqual(call.url, 'https://getcourier.dev/alias', 'POSTs to /alias');
   assert.strictEqual(call.method, 'POST');
-  assert.strictEqual(call.headers['user-agent'], 'getcourier-js/0.2.0', 'sends the package User-Agent');
+  assert.strictEqual(call.headers['user-agent'], 'getcourier-js/0.2.1', 'sends the package User-Agent');
   assert.deepStrictEqual(call.body, {
     alias: 'my-agent',
     purpose: 'signing up for an API key',
