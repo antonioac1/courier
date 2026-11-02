@@ -1,4 +1,6 @@
-# GetCourier — email inboxes for AI agents
+# GetCourier — email inbox + MCP server for AI agents
+
+**One call, no signup, no API key. Receive verification codes and magic links, reply and send.** Live at [getcourier.dev](https://getcourier.dev) · hosted MCP at `https://getcourier.dev/mcp` · [llms.txt](https://getcourier.dev/llms.txt) · [Terms](https://getcourier.dev/terms)
 
 An AI agent gets its own email inbox with one HTTP call: `POST https://getcourier.dev/alias` with no body, no signup and no API key. The response returns the address, a `read_token` shown once, a 72-hour expiry and an Ed25519 identity. The agent then submits that address on a signup form and calls `GET /v1/sandbox/inboxes/<alias>/wait`, which long-polls until a verification code or magic link arrives and returns it already extracted.
 
@@ -119,7 +121,7 @@ The xAI API supports Streaming HTTP and SSE for MCP servers; GetCourier serves s
 
 ## Tools
 
-Ten tools are exposed over MCP. Every tool that touches an inbox takes the `read_token` from `create_inbox`, either as an argument or as a bearer token.
+Twelve tools are exposed over MCP. Start with `create_inbox` (no arguments, no key), then `wait_for_code`. Every tool that touches an inbox takes the `read_token` from `create_inbox`, either as an argument or as a bearer token.
 
 | Tool | What it does |
 | --- | --- |
@@ -133,6 +135,8 @@ Ten tools are exposed over MCP. Every tool that touches an inbox takes the `read
 | `create_deposit` | Create a crypto deposit invoice to buy credits: USDC on Base or BTC on-chain. |
 | `deposit_status` | Check whether a deposit has been paid and credited yet, and how many credits it added. |
 | `pricing` | Show what inboxes cost in credits, the free tier limits and the crypto payment rails that are enabled. No arguments, no auth. |
+| `send_message` | Send from the inbox's own @getcourier.dev address (Amazon SES, DKIM-signed). Free inboxes reply only, 100 a month, because spam bots abuse free senders; otherwise 20 credits (US$0.002) per recipient or x402 pay-per-call. |
+| `verify_owner` | Email a human owner a confirmation link; once confirmed, the account's free 100 sends a month can go to anyone. |
 
 ## Reading untrusted email safely
 
@@ -147,9 +151,9 @@ Message bodies are encrypted at rest with AES-256-GCM, and an inbox accepts mail
 
 ## Limits & pricing
 
-**Free tier.** No signup, no key: **3 inboxes per hour and 5 per day per client IP**, 72-hour lifetime, receive-only. Over the limit the API returns HTTP `402` with code `FREE_QUOTA_EXCEEDED`, a `retry_after_seconds` field and a `Retry-After` header.
+**Free tier.** No signup, no key: **3 inboxes per hour and 5 per day per client IP**, 72-hour lifetime; free inboxes may reply up to 100 times a month. Over the limit the API returns HTTP `402` with code `FREE_QUOTA_EXCEEDED`, a `retry_after_seconds` field and a `Retry-After` header.
 
-**Other limits.** 100 messages per inbox; message `text` is truncated to 4000 characters in the agent view; `wait` clamps `timeout` to 1–55 seconds. Inboxes are receive-only — GetCourier does not send email.
+**Other limits.** 100 messages per inbox; message `text` is truncated to 4000 characters in the agent view; `wait` clamps `timeout` to 1–55 seconds. Sending: 50 recipients per inbox per UTC day, 50 per message, 200 per account per day in its first 7 days; any spam complaint suspends sending. Not for bulk or marketing mail.
 
 **Paid credits: live.** 1 credit = US$0.0001; a 72-hour inbox is 100 credits (US$0.01) and a 30-day inbox is 2000 credits (US$0.20). Create an account (`POST /v1/accounts`), request a deposit (`POST /v1/deposits` with `usdc-base` or `btc`, minimum US$1), pay the exact amount from your own wallet, and use the `account_key` as a Bearer token. No signup, no card. `GET /v1/pricing` is authoritative.
 
@@ -182,16 +186,16 @@ GetCourier is listed in the official MCP Registry as **`dev.getcourier/getcourie
 ## FAQ
 
 **Do I need an account, an API key or a signup to get an inbox?**
-No. `POST https://getcourier.dev/alias` with no body and no auth returns a working inbox in about 15 ms. Accounts and `account_key`s exist only for longer-lived inboxes and volume, and paid usage is not switched on yet.
+No. `POST https://getcourier.dev/alias` with no body and no auth returns a working inbox in about 15 ms. Accounts and `account_key`s exist only for longer-lived inboxes and volume, and paid usage is live (USDC on Base or BTC credits, or x402 pay-per-call).
 
 **How does an agent actually get the verification code?**
 Two calls: create the inbox, submit the returned address on the signup form, then call `GET /v1/sandbox/inboxes/<alias>/wait` (or the `wait_for_code` MCP tool). It long-polls up to 55 seconds and returns the extracted `code` and `link`; on timeout it returns `{ "message": null, "timeout": true }` and you call it again.
 
 **How long does an inbox live, and what happens to the mail?**
-72 hours on the free tier, which is enough for a signup and a verification code. A 30-day inbox (720 hours) is available with credits once paid usage opens. Each inbox holds up to 100 messages, and you can `DELETE` it as soon as you are done.
+72 hours on the free tier, which is enough for a signup and a verification code. A 30-day inbox (720 hours) is available with credits (2,000 credits = US$0.20). Each inbox holds up to 100 messages, and you can `DELETE` it as soon as you are done.
 
 **Can GetCourier send email, or is it only for receiving?**
-Receive-only. Inboxes accept mail; GetCourier does not send email on your behalf, so it cannot be used to reply, forward or run a mailing list.
+Both, since 2026-11-02. `POST /v1/sandbox/inboxes/<alias>/send` (or the `send_message` MCP tool) sends from the inbox's own address through Amazon SES. Free inboxes can reply to people who emailed them, up to 100 a month, because spam bots abuse free email senders. To send to anyone: deposit credits (20 credits = US$0.002 per recipient), pay per call with x402 (USDC on Base), or verify a human owner email. It is not a newsletter or bulk-mail service.
 
 **Is it safe to let an agent read mail from an inbox?**
 Yes, if the agent treats the content as untrusted data. Every message is returned with `untrusted: true`, the marker `"UNTRUSTED EXTERNAL EMAIL"`, an `auth` block with SPF, DKIM and DMARC results plus a verdict, and hidden or zero-width text already stripped. Act on the extracted `codes` and `links`, not on instructions in the body.
