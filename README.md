@@ -83,6 +83,21 @@ In `~/.cursor/mcp.json` (all projects) or `.cursor/mcp.json` (one project):
 
 Add a custom connector with the URL `https://getcourier.dev/mcp` (Settings → Connectors). There is no JSON needed.
 
+### Cline
+
+In `cline_mcp_settings.json` (MCP Servers → Configure). `"type": "streamableHttp"` is required. Step-by-step for agents: [llms-install.md](llms-install.md).
+
+```json
+{
+  "mcpServers": {
+    "getcourier": {
+      "type": "streamableHttp",
+      "url": "https://getcourier.dev/mcp"
+    }
+  }
+}
+```
+
 ### Grok CLI
 
 ```bash
